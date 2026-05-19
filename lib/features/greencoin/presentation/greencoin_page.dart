@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -66,10 +67,18 @@ class _GreenCoinPageState extends ConsumerState<GreenCoinPage> {
                           ),
                         ),
                         const Spacer(),
-                        const Icon(
-                          Icons.account_balance_wallet_outlined,
-                          color: Colors.white70,
-                          size: 18,
+                        SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: Image.asset(
+                            AppIcons.wallet,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, __, ___) => const Icon(
+                              Icons.account_balance_wallet_outlined,
+                              color: Colors.white70,
+                              size: 18,
+                            ),
+                          ),
                         ),
                       ],
                     ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -146,6 +147,7 @@ class _Body extends StatelessWidget {
             children: [
               _MetricCard(
                 icon: Icons.account_balance_wallet_outlined,
+                assetPath: AppIcons.coin,
                 iconBg: AppColors.primaryLight,
                 iconColor: AppColors.primaryDark,
                 label: 'SALDO GREENCOIN',
@@ -153,6 +155,7 @@ class _Body extends StatelessWidget {
               ),
               _MetricCard(
                 icon: Icons.delete_outline_rounded,
+                assetPath: AppIcons.recycleBin,
                 iconBg: const Color(0xFFE0F2FE),
                 iconColor: const Color(0xFF0284C7),
                 label: 'TOTAL SAMPAH',
@@ -160,6 +163,7 @@ class _Body extends StatelessWidget {
               ),
               _MetricCard(
                 icon: Icons.receipt_long_outlined,
+                assetPath: AppIcons.grocery,
                 iconBg: const Color(0xFFFFEDD5),
                 iconColor: const Color(0xFFEA580C),
                 label: 'TOTAL TRANSAKSI',
@@ -167,6 +171,7 @@ class _Body extends StatelessWidget {
               ),
               _MetricCard(
                 icon: Icons.co2_outlined,
+                assetPath: AppIcons.ecoBag,
                 iconBg: AppColors.primaryLight,
                 iconColor: AppColors.primaryDark,
                 label: 'CO2 DIHEMAT',
@@ -334,6 +339,7 @@ class _Body extends StatelessWidget {
 
 class _MetricCard extends StatelessWidget {
   final IconData icon;
+  final String? assetPath;
   final Color iconBg;
   final Color iconColor;
   final String label;
@@ -345,6 +351,7 @@ class _MetricCard extends StatelessWidget {
     required this.iconColor,
     required this.label,
     required this.value,
+    this.assetPath,
   });
 
   @override
@@ -354,13 +361,21 @@ class _MetricCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 32,
-            height: 32,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               color: iconBg,
               borderRadius: BorderRadius.circular(AppSizes.radiusSm),
             ),
-            child: Icon(icon, size: 18, color: iconColor),
+            padding: const EdgeInsets.all(4),
+            child: assetPath != null
+                ? Image.asset(
+                    assetPath!,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) =>
+                        Icon(icon, size: 18, color: iconColor),
+                  )
+                : Icon(icon, size: 18, color: iconColor),
           ),
           const Spacer(),
           Text(

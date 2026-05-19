@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -227,20 +228,8 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
               height: 100,
               color: AppColors.primarySubtle,
               alignment: Alignment.center,
-              child: p.imageUrl != null && p.imageUrl!.isNotEmpty
-                  ? Image.network(
-                      p.imageUrl!,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      errorBuilder: (_, __, ___) => Text(
-                        p.displayEmoji,
-                        style: const TextStyle(fontSize: 48),
-                      ),
-                    )
-                  : Text(
-                      p.displayEmoji,
-                      style: const TextStyle(fontSize: 48),
-                    ),
+              padding: const EdgeInsets.all(AppSizes.sm),
+              child: _ProductMedia(product: p),
             ),
           ),
           Expanded(
@@ -323,4 +312,38 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
       ),
     );
   }
+}
+
+class _ProductMedia extends StatelessWidget {
+  final MarketplaceProduct product;
+  const _ProductMedia({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Remote image (admin-set URL) wins
+    final url = product.imageUrl;
+    if (url != null && url.isNotEmpty) {
+      return Image.network(
+        url,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => _fallback(),
+      );
+    }
+    // 2. Local asset by product name
+    final asset = AppIcons.forProductName(product.name);
+    if (asset != null) {
+      return Image.asset(
+        asset,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => _fallback(),
+      );
+    }
+    // 3. Emoji fallback
+    return _fallback();
+  }
+
+  Widget _fallback() => Text(
+        product.displayEmoji,
+        style: const TextStyle(fontSize: 48),
+      );
 }

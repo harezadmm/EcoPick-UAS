@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/primary_button.dart';
@@ -23,6 +24,7 @@ class EcoPickSuccessPage extends StatelessWidget {
             const SizedBox(height: AppSizes.xxl),
             const SuccessHeader(
               icon: Icons.local_shipping_rounded,
+              assetPath: AppIcons.garbageTruck,
               title: 'EcoPick Terkirim',
               subtitle:
                   'Permintaan penjemputan Anda telah kami terima dan menunggu persetujuan admin sebelum GreenCoin masuk.',

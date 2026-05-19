@@ -4,6 +4,7 @@ import '../../core/constants/app_sizes.dart';
 
 class SuccessHeader extends StatelessWidget {
   final IconData icon;
+  final String? assetPath;
   final String title;
   final String subtitle;
   final Color iconColor;
@@ -13,6 +14,7 @@ class SuccessHeader extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
+    this.assetPath,
     this.iconColor = AppColors.primary,
   });
 
@@ -26,11 +28,19 @@ class SuccessHeader extends StatelessWidget {
             Container(
               width: 88,
               height: 88,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.primaryLight,
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: iconColor, size: 40),
+              padding: const EdgeInsets.all(16),
+              child: assetPath != null
+                  ? Image.asset(
+                      assetPath!,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) =>
+                          Icon(icon, color: iconColor, size: 40),
+                    )
+                  : Icon(icon, color: iconColor, size: 40),
             ),
             Container(
               width: 26,

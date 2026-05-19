@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -23,6 +24,7 @@ class EcoDropSuccessPage extends StatelessWidget {
             const SizedBox(height: AppSizes.xl),
             const SuccessHeader(
               icon: Icons.recycling_rounded,
+              assetPath: AppIcons.recycleBin,
               title: 'EcoDrop Terkirim',
               subtitle:
                   'Data setoran Anda telah kami terima dan sedang menunggu persetujuan admin sebelum GreenCoin masuk.',
