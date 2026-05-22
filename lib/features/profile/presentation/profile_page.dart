@@ -80,26 +80,26 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               Center(
                 child: Text(
                   user?.fullName ?? 'User',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textP(context),
                   ),
                 ),
               ),
               Center(
                 child: Text(
                   user?.email ?? '',
-                  style: const TextStyle(color: AppColors.textSecondary),
+                  style: TextStyle(color: AppColors.textS(context)),
                 ),
               ),
               const SizedBox(height: AppSizes.xl),
-              const Text(
+              Text(
                 'Informasi Profil',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                  color: AppColors.textP(context),
                 ),
               ),
               const SizedBox(height: AppSizes.sm),
@@ -127,12 +127,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
               ),
               const SizedBox(height: AppSizes.xl),
-              const Text(
+              Text(
                 'Keamanan',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                  color: AppColors.textP(context),
                 ),
               ),
               const SizedBox(height: AppSizes.sm),
@@ -140,11 +140,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Kata Sandi Saat Ini',
                       style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.textSecondary,
+                        color: AppColors.textS(context),
                       ),
                     ),
                     const SizedBox(height: AppSizes.sm),
@@ -157,28 +157,28 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             _obscure
                                 ? Icons.visibility_off_outlined
                                 : Icons.visibility_outlined,
-                            color: AppColors.textTertiary,
+                            color: AppColors.textT(context),
                           ),
                           onPressed: () => setState(() => _obscure = !_obscure),
                         ),
                       ),
                     ),
                     const SizedBox(height: AppSizes.md),
-                    const Text(
+                    Text(
                       'Kata Sandi Baru',
                       style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.textSecondary,
+                        color: AppColors.textS(context),
                       ),
                     ),
                     const SizedBox(height: AppSizes.sm),
-                    const TextField(
+                    TextField(
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Masukkan kata sandi baru',
                         suffixIcon: Icon(
                           Icons.lock_outline_rounded,
-                          color: AppColors.textTertiary,
+                          color: AppColors.textT(context),
                         ),
                       ),
                     ),
@@ -233,9 +233,9 @@ class _InfoRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
-            color: AppColors.textTertiary,
+            color: AppColors.textT(context),
             fontWeight: FontWeight.w700,
             letterSpacing: 0.5,
           ),
@@ -250,9 +250,9 @@ class _InfoRow extends StatelessWidget {
             Expanded(
               child: Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: AppColors.textP(context),
                 ),
               ),
             ),

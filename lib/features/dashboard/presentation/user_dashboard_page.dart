@@ -185,16 +185,16 @@ class _Body extends ConsumerWidget {
             children: [
               Text(
                 'Halo, ${fullName?.split(' ').first ?? 'User'}! 👋',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
+                  color: AppColors.textP(context),
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
+              Text(
                 'Mari buat bumi lebih hijau hari ini.',
-                style: TextStyle(color: AppColors.textSecondary),
+                style: TextStyle(color: AppColors.textS(context)),
               ),
             ],
           ),
@@ -253,12 +253,12 @@ class _Body extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    const Text(
+                    Text(
                       'Aktivitas Daur Ulang',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: AppColors.textP(context),
                       ),
                     ),
                     const Spacer(),
@@ -268,24 +268,24 @@ class _Body extends ConsumerWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceMuted,
+                        color: AppColors.surfMuted(context),
                         borderRadius:
                             BorderRadius.circular(AppSizes.radiusPill),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             '7 Hari Terakhir',
                             style: TextStyle(
                               fontSize: 12,
-                              color: AppColors.textSecondary,
+                              color: AppColors.textS(context),
                             ),
                           ),
                           Icon(
                             Icons.expand_more,
                             size: 16,
-                            color: AppColors.textSecondary,
+                            color: AppColors.textS(context),
                           ),
                         ],
                       ),
@@ -308,22 +308,22 @@ class _Body extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Kategori Sampah',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textP(context),
                   ),
                 ),
                 const SizedBox(height: AppSizes.lg),
                 if (data.categoryShares.isEmpty)
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(vertical: AppSizes.md),
                     child: Text(
                       'Belum ada data kategori. Mulai setor sampah\nlewat EcoPick atau EcoDrop.',
                       style: TextStyle(
-                        color: AppColors.textTertiary,
+                        color: AppColors.textT(context),
                         fontSize: 13,
                       ),
                     ),
@@ -344,12 +344,12 @@ class _Body extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  const Text(
+                  Text(
                     'Transaksi Terbaru',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: AppColors.textP(context),
                     ),
                   ),
                   const Spacer(),
@@ -378,19 +378,19 @@ class _RecentTransactionsList extends ConsumerWidget {
         padding: EdgeInsets.symmetric(vertical: AppSizes.lg),
         child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
       ),
-      error: (_, __) => const AppCard(
+      error: (_, __) => AppCard(
         padding: EdgeInsets.symmetric(
           horizontal: AppSizes.lg,
           vertical: AppSizes.lg,
         ),
         child: Text(
           'Gagal memuat transaksi terbaru',
-          style: TextStyle(color: AppColors.textTertiary),
+          style: TextStyle(color: AppColors.textT(context)),
         ),
       ),
       data: (txns) {
         if (txns.isEmpty) {
-          return const AppCard(
+          return AppCard(
             padding: EdgeInsets.symmetric(
               horizontal: AppSizes.lg,
               vertical: AppSizes.xl,
@@ -400,14 +400,14 @@ class _RecentTransactionsList extends ConsumerWidget {
                 Icon(
                   Icons.receipt_long_outlined,
                   size: 32,
-                  color: AppColors.textTertiary,
+                  color: AppColors.textT(context),
                 ),
                 SizedBox(height: AppSizes.sm),
                 Text(
                   'Belum ada transaksi',
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textP(context),
                   ),
                 ),
                 SizedBox(height: 4),
@@ -415,7 +415,7 @@ class _RecentTransactionsList extends ConsumerWidget {
                   'Buat permintaan EcoPick atau setor EcoDrop\nuntuk mulai menabung GreenCoin.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: AppColors.textTertiary,
+                    color: AppColors.textT(context),
                     fontSize: 12,
                   ),
                 ),
@@ -475,7 +475,7 @@ class _RecentTxnTile extends StatelessWidget {
           Icons.swap_horiz_rounded,
           'Penyesuaian',
           AppColors.surfaceMuted,
-          AppColors.textSecondary,
+          AppColors.textS(context),
         ),
     };
     final amount =
@@ -500,18 +500,18 @@ class _RecentTxnTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textP(context),
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   Formatters.dateTime(txn.createdAt),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.textTertiary,
+                    color: AppColors.textT(context),
                   ),
                 ),
               ],
@@ -527,16 +527,16 @@ class _RecentTxnTile extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                   color: txn.isInflow
                       ? AppColors.primary
-                      : AppColors.textSecondary,
+                      : AppColors.textS(context),
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 txn.status.toUpperCase(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textTertiary,
+                  color: AppColors.textT(context),
                   letterSpacing: 0.4,
                 ),
               ),
@@ -598,10 +598,10 @@ class _MetricCard extends StatelessWidget {
           const Spacer(),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: AppColors.textTertiary,
+              color: AppColors.textT(context),
               letterSpacing: 0.5,
             ),
           ),
@@ -627,10 +627,10 @@ class _AnimatedMetricValue extends StatelessWidget {
     if (match == null) {
       return Text(
         value,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w800,
-          color: AppColors.textPrimary,
+          color: AppColors.textP(context),
         ),
       );
     }
@@ -653,10 +653,10 @@ class _AnimatedMetricValue extends StatelessWidget {
             : animated.toStringAsFixed(1).replaceAll('.', ',');
         return Text(
           '$display$suffix',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w800,
-            color: AppColors.textPrimary,
+            color: AppColors.textP(context),
           ),
         );
       },
@@ -731,7 +731,7 @@ class _WeeklyChart extends StatelessWidget {
                     days[idx],
                     style: TextStyle(
                       fontSize: 11,
-                      color: isMax ? AppColors.primary : AppColors.textTertiary,
+                      color: isMax ? AppColors.primary : AppColors.textT(context),
                       fontWeight: isMax ? FontWeight.w800 : FontWeight.w500,
                     ),
                   ),
@@ -776,18 +776,18 @@ class _CategoryBar extends StatelessWidget {
           children: [
             Text(
               share.name,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
-                color: AppColors.textPrimary,
+                color: AppColors.textP(context),
               ),
             ),
             const Spacer(),
             Text(
               '${(share.percent * 100).round()}%',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary,
+                color: AppColors.textS(context),
               ),
             ),
           ],
@@ -803,7 +803,7 @@ class _CategoryBar extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: AppMotion.reduce(context) ? share.percent : value,
                 minHeight: 6,
-                backgroundColor: AppColors.divider,
+                backgroundColor: AppColors.div(context),
                 valueColor: AlwaysStoppedAnimation(Color(share.color)),
               ),
             );

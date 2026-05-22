@@ -35,13 +35,13 @@ class WithdrawSuccessPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    children: const [
+                    children: [
                       Text(
                         'Ringkasan penarikan',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                         ),
                       ),
                       Spacer(),
@@ -52,23 +52,23 @@ class WithdrawSuccessPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: AppSizes.lg),
-                  _row(
+                  _row(context, 
                     'Jumlah ditarik',
                     '2,000 GC',
                     valueColor: AppColors.primary,
                   ),
-                  _row('Nilai rupiah', 'Rp 200.000'),
-                  _row('Tujuan pencairan', 'BCA •••• 4821'),
-                  _row('Estimasi masuk', 'Maks. 1 x 24 jam'),
+                  _row(context, 'Nilai rupiah', 'Rp 200.000'),
+                  _row(context, 'Tujuan pencairan', 'BCA •••• 4821'),
+                  _row(context, 'Estimasi masuk', 'Maks. 1 x 24 jam'),
                   const Divider(height: 32),
-                  _row(
+                  _row(context, 
                     'Sisa saldo',
                     '3,240 GC',
                   ),
-                  _row(
+                  _row(context, 
                     'Nomor referensi',
                     'GWD-260612-0041',
-                    valueColor: AppColors.textTertiary,
+                    valueColor: AppColors.textT(context),
                   ),
                 ],
               ),
@@ -84,7 +84,7 @@ class WithdrawSuccessPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    children: const [
+                    children: [
                       Icon(Icons.info_outline,
                           color: AppColors.primary, size: 16),
                       SizedBox(width: 6),
@@ -92,7 +92,7 @@ class WithdrawSuccessPage extends StatelessWidget {
                         'Informasi penting',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                         ),
                       ),
                     ],
@@ -114,9 +114,9 @@ class WithdrawSuccessPage extends StatelessWidget {
                           Expanded(
                             child: Text(
                               b,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 13,
-                                color: AppColors.textSecondary,
+                                color: AppColors.textS(context),
                                 height: 1.5,
                               ),
                             ),
@@ -139,21 +139,21 @@ class WithdrawSuccessPage extends StatelessWidget {
     );
   }
 
-  Widget _row(String k, String v, {Color? valueColor}) => Padding(
+  Widget _row(BuildContext context, String k, String v, {Color? valueColor}) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(
           children: [
             Expanded(
               child: Text(
                 k,
-                style: const TextStyle(color: AppColors.textSecondary),
+                style: TextStyle(color: AppColors.textS(context)),
               ),
             ),
             Text(
               v,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
-                color: valueColor ?? AppColors.textPrimary,
+                color: valueColor ?? AppColors.textP(context),
               ),
             ),
           ],

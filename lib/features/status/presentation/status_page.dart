@@ -60,14 +60,14 @@ class _StatusPageState extends State<StatusPage> {
                               BorderRadius.circular(AppSizes.radiusPill),
                           border: Border.all(
                             color:
-                                active ? AppColors.primary : AppColors.border,
+                                active ? AppColors.primary : AppColors.brd(context),
                           ),
                         ),
                         child: Text(
                           labels[i],
                           style: TextStyle(
                             color:
-                                active ? Colors.white : AppColors.textSecondary,
+                                active ? Colors.white : AppColors.textS(context),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -202,18 +202,18 @@ class _StatusCard extends StatelessWidget {
                   children: [
                     Text(
                       type,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
+                        color: AppColors.textP(context),
                         fontSize: 16,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       date,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.textTertiary,
+                        color: AppColors.textT(context),
                       ),
                     ),
                   ],
@@ -226,14 +226,14 @@ class _StatusCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _kv('Kategori', category),
+                child: _kv(context, 'Kategori', category),
               ),
               Expanded(
-                child: _kv('Berat', weight),
+                child: _kv(context, 'Berat', weight),
               ),
               if (estimatedGc > 0)
                 Expanded(
-                  child: _kv(
+                  child: _kv(context, 
                     'Estimasi',
                     '+$estimatedGc GC',
                     valueColor: AppColors.primary,
@@ -246,14 +246,14 @@ class _StatusCard extends StatelessWidget {
     );
   }
 
-  Widget _kv(String k, String v, {Color? valueColor}) => Column(
+  Widget _kv(BuildContext context, String k, String v, {Color? valueColor}) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             k.toUpperCase(),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 10,
-              color: AppColors.textTertiary,
+              color: AppColors.textT(context),
               fontWeight: FontWeight.w700,
               letterSpacing: 0.5,
             ),
@@ -263,7 +263,7 @@ class _StatusCard extends StatelessWidget {
             v,
             style: TextStyle(
               fontWeight: FontWeight.w700,
-              color: valueColor ?? AppColors.textPrimary,
+              color: valueColor ?? AppColors.textP(context),
             ),
           ),
         ],

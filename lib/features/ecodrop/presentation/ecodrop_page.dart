@@ -151,12 +151,12 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                     children: [
                       _BankSampahCard(),
                       const SizedBox(height: AppSizes.xl),
-                      const Text(
+                      Text(
                         'Detail Pengiriman',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                         ),
                       ),
                       const SizedBox(height: AppSizes.md),
@@ -166,7 +166,7 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: AppSizes.lg),
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceMuted,
+                            color: AppColors.surfMuted(context),
                             borderRadius:
                                 BorderRadius.circular(AppSizes.radiusPill),
                           ),
@@ -174,9 +174,9 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                             child: DropdownButton<WasteCategory>(
                               value: _selectedCategory,
                               isExpanded: true,
-                              hint: const Text(
+                              hint: Text(
                                 'Pilih kategori sampah',
-                                style: TextStyle(color: AppColors.textTertiary),
+                                style: TextStyle(color: AppColors.textT(context)),
                               ),
                               icon: const Icon(
                                 Icons.keyboard_arrow_down_rounded,
@@ -205,14 +205,14 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                             decimal: true,
                           ),
                           onChanged: (_) => setState(() {}),
-                          suffix: const Padding(
+                          suffix: Padding(
                             padding: EdgeInsets.only(right: AppSizes.lg),
                             child: Align(
                               widthFactor: 1.0,
                               child: Text(
                                 'KG',
                                 style: TextStyle(
-                                  color: AppColors.textTertiary,
+                                  color: AppColors.textT(context),
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -258,19 +258,19 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                                 ),
                               ),
                               const SizedBox(height: AppSizes.md),
-                              const Text(
+                              Text(
                                 'Unggah foto sampah Anda',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
+                                  color: AppColors.textP(context),
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              const Text(
+                              Text(
                                 'Maks. 5MB (JPG, PNG)',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: AppColors.textTertiary,
+                                  color: AppColors.textT(context),
                                 ),
                               ),
                             ],
@@ -290,10 +290,10 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                       horizontal: AppSizes.xl,
                       vertical: AppSizes.md,
                     ),
-                    decoration: const BoxDecoration(
-                      color: AppColors.surface,
+                    decoration: BoxDecoration(
+                      color: AppColors.surf(context),
                       border: Border(
-                        top: BorderSide(color: AppColors.divider),
+                        top: BorderSide(color: AppColors.div(context)),
                       ),
                     ),
                     child: Column(
@@ -319,10 +319,10 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                                 size: 18,
                               ),
                               const SizedBox(width: AppSizes.sm),
-                              const Text(
+                              Text(
                                 'Estimasi Pendapatan',
                                 style: TextStyle(
-                                  color: AppColors.textSecondary,
+                                  color: AppColors.textS(context),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -393,7 +393,7 @@ class _BankSampahCard extends StatelessWidget {
                     color: AppColors.primaryLight,
                     borderRadius: BorderRadius.circular(AppSizes.radiusPill),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Sedang Buka • 08:00 – 16:00',
                     style: TextStyle(
                       fontSize: 11,
@@ -403,19 +403,19 @@ class _BankSampahCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSizes.sm),
-                const Text(
+                Text(
                   'Bank Sampah Induk Surabaya',
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textP(context),
                   ),
                 ),
                 const SizedBox(height: 2),
-                const Text(
+                Text(
                   'Jl. Ngagel Tim. No.26, Surabaya',
                   style: TextStyle(
-                    color: AppColors.textSecondary,
+                    color: AppColors.textS(context),
                     fontSize: 13,
                   ),
                 ),
@@ -447,7 +447,7 @@ class _BankSampahCard extends StatelessWidget {
                     vertical: AppSizes.sm,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: AppColors.surf(context),
                     borderRadius: BorderRadius.circular(AppSizes.radiusPill),
                     boxShadow: [
                       BoxShadow(

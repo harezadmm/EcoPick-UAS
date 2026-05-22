@@ -157,12 +157,12 @@ class _GreenCoinPageState extends ConsumerState<GreenCoinPage> {
               const SizedBox(height: AppSizes.lg),
               Row(
                 children: [
-                  const Text(
+                  Text(
                     'Riwayat Transaksi',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: AppColors.textP(context),
                     ),
                   ),
                   const Spacer(),
@@ -234,7 +234,7 @@ class _TransactionList extends ConsumerWidget {
           _ => txns,
         };
         if (filtered.isEmpty) {
-          return const AppCard(
+          return AppCard(
             padding: EdgeInsets.symmetric(
               horizontal: AppSizes.lg,
               vertical: AppSizes.xl,
@@ -244,14 +244,14 @@ class _TransactionList extends ConsumerWidget {
                 Icon(
                   Icons.receipt_long_outlined,
                   size: 32,
-                  color: AppColors.textTertiary,
+                  color: AppColors.textT(context),
                 ),
                 SizedBox(height: AppSizes.sm),
                 Text(
                   'Belum ada transaksi',
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textP(context),
                   ),
                 ),
                 SizedBox(height: 4),
@@ -259,7 +259,7 @@ class _TransactionList extends ConsumerWidget {
                   'Riwayat GreenCoin akan muncul setelah\nAnda mulai bertransaksi.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: AppColors.textTertiary,
+                    color: AppColors.textT(context),
                     fontSize: 12,
                   ),
                 ),
@@ -315,7 +315,7 @@ class _TransactionRow extends StatelessWidget {
           Icons.swap_horiz_rounded,
           'Penyesuaian',
           AppColors.surfaceMuted,
-          AppColors.textSecondary,
+          AppColors.textS(context),
         ),
     };
     return _TxnTile(
@@ -361,13 +361,13 @@ class _SegmentTabs extends StatelessWidget {
                 color: active ? AppColors.primary : AppColors.surface,
                 borderRadius: BorderRadius.circular(AppSizes.radiusPill),
                 border: Border.all(
-                  color: active ? AppColors.primary : AppColors.border,
+                  color: active ? AppColors.primary : AppColors.brd(context),
                 ),
               ),
               child: Text(
                 labels[i],
                 style: TextStyle(
-                  color: active ? Colors.white : AppColors.textSecondary,
+                  color: active ? Colors.white : AppColors.textS(context),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -425,17 +425,17 @@ class _TxnTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textP(context),
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   date,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.textTertiary,
+                    color: AppColors.textT(context),
                   ),
                 ),
               ],
@@ -448,16 +448,16 @@ class _TxnTile extends StatelessWidget {
                 amount,
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
-                  color: positive ? AppColors.primary : AppColors.textSecondary,
+                  color: positive ? AppColors.primary : AppColors.textS(context),
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 statusLabel.toUpperCase(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textTertiary,
+                  color: AppColors.textT(context),
                   letterSpacing: 0.4,
                 ),
               ),

@@ -16,7 +16,7 @@ class WithdrawBottomSheet extends StatefulWidget {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.surf(context),
       shape: const RoundedRectangleBorder(
         borderRadius:
             BorderRadius.vertical(top: Radius.circular(AppSizes.radiusXl)),
@@ -92,12 +92,12 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: AppColors.brd(context),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(
+                padding: EdgeInsets.fromLTRB(
                   AppSizes.xl,
                   AppSizes.lg,
                   AppSizes.xl,
@@ -109,20 +109,20 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             'Tarik dana',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.textPrimary,
+                              color: AppColors.textP(context),
                             ),
                           ),
                           SizedBox(height: 4),
                           Text(
                             'Ubah GreenCoin Anda menjadi saldo e-wallet dengan cepat dan aman.',
                             style: TextStyle(
-                              color: AppColors.textSecondary,
+                              color: AppColors.textS(context),
                               fontSize: 13,
                             ),
                           ),
@@ -176,7 +176,7 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                           ),
                           Text(
                             '≈ ${Formatters.rupiah(Formatters.rupiahFromGc(widget.balanceGc))}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
                             ),
@@ -185,11 +185,11 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                       ),
                     ),
                     const SizedBox(height: AppSizes.lg),
-                    const Text(
+                    Text(
                       'Pilih e-wallet',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: AppColors.textP(context),
                       ),
                     ),
                     const SizedBox(height: AppSizes.sm),
@@ -222,7 +222,7 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                               border: Border.all(
                                 color: selected
                                     ? AppColors.primary
-                                    : AppColors.border,
+                                    : AppColors.brd(context),
                                 width: selected ? 1.5 : 1,
                               ),
                             ),
@@ -248,9 +248,9 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                                 Expanded(
                                   child: Text(
                                     _wallets[i].name,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.textPrimary,
+                                      color: AppColors.textP(context),
                                     ),
                                   ),
                                 ),
@@ -267,11 +267,11 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                       },
                     ),
                     const SizedBox(height: AppSizes.lg),
-                    const Text(
+                    Text(
                       'Detail tujuan',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: AppColors.textP(context),
                       ),
                     ),
                     const SizedBox(height: AppSizes.sm),
@@ -285,11 +285,11 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                       child: AppTextField(controller: _nameCtrl),
                     ),
                     const SizedBox(height: AppSizes.lg),
-                    const Text(
+                    Text(
                       'Jumlah penarikan',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: AppColors.textP(context),
                       ),
                     ),
                     const SizedBox(height: AppSizes.sm),
@@ -299,7 +299,7 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                         vertical: AppSizes.md,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceMuted,
+                        color: AppColors.surfMuted(context),
                         borderRadius:
                             BorderRadius.circular(AppSizes.radiusPill),
                       ),
@@ -338,7 +338,7 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                               border: Border.all(
                                 color: selected
                                     ? AppColors.primary
-                                    : AppColors.border,
+                                    : AppColors.brd(context),
                               ),
                             ),
                             child: Text(
@@ -347,7 +347,7 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                                 fontWeight: FontWeight.w600,
                                 color: selected
                                     ? Colors.white
-                                    : AppColors.textSecondary,
+                                    : AppColors.textS(context),
                               ),
                             ),
                           ),
@@ -358,20 +358,20 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                     Container(
                       padding: const EdgeInsets.all(AppSizes.lg),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceMuted,
+                        color: AppColors.surfMuted(context),
                         borderRadius:
                             BorderRadius.circular(AppSizes.radiusLg),
                       ),
                       child: Column(
                         children: [
-                          const Row(
+                          Row(
                             children: [
                               Text(
                                 'RINGKASAN PENCAIRAN',
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.textTertiary,
+                                  color: AppColors.textT(context),
                                   letterSpacing: 0.5,
                                 ),
                               ),
@@ -381,12 +381,12 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                           _kv('Nilai penarikan', Formatters.rupiah(_rupiah)),
                           const SizedBox(height: 6),
                           Row(
-                            children: const [
+                            children: [
                               Expanded(
                                 child: Text(
                                   'Biaya admin',
                                   style: TextStyle(
-                                    color: AppColors.textSecondary,
+                                    color: AppColors.textS(context),
                                   ),
                                 ),
                               ),
@@ -402,12 +402,12 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                           const Divider(height: 24),
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
                                   'Total diterima',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
-                                    color: AppColors.textPrimary,
+                                    color: AppColors.textP(context),
                                   ),
                                 ),
                               ),
@@ -434,7 +434,7 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Icon(
                             Icons.info_outline,
                             color: AppColors.info,
@@ -446,7 +446,7 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                               'Pencairan biasanya membutuhkan waktu 1–5 menit. Pastikan nomor e-wallet aktif untuk menghindari kegagalan transaksi.',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: AppColors.textSecondary,
+                                color: AppColors.textS(context),
                                 height: 1.4,
                               ),
                             ),
@@ -466,11 +466,11 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                           onChanged: (v) =>
                               setState(() => _confirmed = v ?? false),
                         ),
-                        const Expanded(
+                        Expanded(
                           child: Text(
                             'Saya memastikan data penarikan sudah benar',
                             style: TextStyle(
-                              color: AppColors.textSecondary,
+                              color: AppColors.textS(context),
                             ),
                           ),
                         ),
@@ -489,9 +489,9 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                     ),
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text(
+                      child: Text(
                         'Batal',
-                        style: TextStyle(color: AppColors.textTertiary),
+                        style: TextStyle(color: AppColors.textT(context)),
                       ),
                     ),
                   ],
@@ -509,13 +509,13 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
           Expanded(
             child: Text(
               k,
-              style: const TextStyle(color: AppColors.textSecondary),
+              style: TextStyle(color: AppColors.textS(context)),
             ),
           ),
           Text(
             v,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
+            style: TextStyle(
+              color: AppColors.textP(context),
               fontWeight: FontWeight.w700,
             ),
           ),

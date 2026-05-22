@@ -150,32 +150,32 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               width: 48,
                               height: 4,
                               decoration: BoxDecoration(
-                                color: AppColors.border,
+                                color: AppColors.brd(context),
                                 borderRadius: BorderRadius.circular(2),
                               ),
                             ),
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Masuk ke Akun Anda',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
+                            color: AppColors.textP(context),
                           ),
                         ),
                         const SizedBox(height: AppSizes.xs),
-                        const Text(
+                        Text(
                           'Masukkan detail akun untuk melanjutkan.',
-                          style: TextStyle(color: AppColors.textSecondary),
+                          style: TextStyle(color: AppColors.textS(context)),
                         ),
                         const SizedBox(height: AppSizes.xl),
-                        const Text(
+                        Text(
                           'Login Cepat',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
+                            color: AppColors.textP(context),
                           ),
                         ),
                         const SizedBox(height: AppSizes.md),
@@ -225,7 +225,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 _obscure
                                     ? Icons.visibility_off_outlined
                                     : Icons.visibility_outlined,
-                                color: AppColors.textTertiary,
+                                color: AppColors.textT(context),
                               ),
                               onPressed: () =>
                                   setState(() => _obscure = !_obscure),
@@ -247,9 +247,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           onPressed: _submit,
                         ),
                         const SizedBox(height: AppSizes.xl),
-                        const Row(
+                        Row(
                           children: [
-                            Expanded(child: Divider(color: AppColors.border)),
+                            Expanded(child: Divider(color: AppColors.brd(context))),
                             Padding(
                               padding: EdgeInsets.symmetric(
                                 horizontal: AppSizes.md,
@@ -258,12 +258,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 'ATAU MASUK DENGAN',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: AppColors.textTertiary,
+                                  color: AppColors.textT(context),
                                   letterSpacing: 0.5,
                                 ),
                               ),
                             ),
-                            Expanded(child: Divider(color: AppColors.border)),
+                            Expanded(child: Divider(color: AppColors.brd(context))),
                           ],
                         ),
                         const SizedBox(height: AppSizes.md),
@@ -291,10 +291,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           child: Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              const Text(
+                              Text(
                                 'Belum punya akun? ',
                                 style: TextStyle(
-                                  color: AppColors.textSecondary,
+                                  color: AppColors.textS(context),
                                 ),
                               ),
                               GestureDetector(
@@ -340,23 +340,23 @@ class _QuickLoginEmpty extends StatelessWidget {
           vertical: AppSizes.sm,
         ),
         decoration: BoxDecoration(
-          color: AppColors.surfaceMuted,
+          color: AppColors.surfMuted(context),
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: AppColors.brd(context)),
         ),
-        child: const Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.person_add_alt_1_rounded,
               size: 18,
-              color: AppColors.textTertiary,
+              color: AppColors.textT(context),
             ),
             SizedBox(width: AppSizes.sm),
             Text(
               'Login dulu untuk menyimpan akun',
               style: TextStyle(
-                color: AppColors.textSecondary,
+                color: AppColors.textS(context),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -459,7 +459,7 @@ class _SocialButton extends StatelessWidget {
       onPressed: () {},
       style: OutlinedButton.styleFrom(
         minimumSize: const Size.fromHeight(48),
-        side: const BorderSide(color: AppColors.border),
+        side: BorderSide(color: AppColors.brd(context)),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSizes.radiusPill),
         ),
@@ -467,8 +467,8 @@ class _SocialButton extends StatelessWidget {
       icon: Icon(icon, color: color, size: 24),
       label: Text(
         label,
-        style: const TextStyle(
-          color: AppColors.textPrimary,
+        style: TextStyle(
+          color: AppColors.textP(context),
           fontWeight: FontWeight.w600,
         ),
       ),

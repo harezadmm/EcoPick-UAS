@@ -25,12 +25,12 @@ class LandingPage extends StatelessWidget {
                 children: [
                   const EcoLogo(size: 36),
                   const SizedBox(width: AppSizes.sm),
-                  const Text(
+                  Text(
                     'EcoPoin',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: AppColors.textP(context),
                     ),
                   ),
                   const Spacer(),
@@ -95,11 +95,11 @@ class LandingPage extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSizes.xxl),
                     RichText(
-                      text: const TextSpan(
+                      text: TextSpan(
                         style: TextStyle(
                           fontSize: 44,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                           height: 1.1,
                         ),
                         children: [
@@ -112,12 +112,12 @@ class LandingPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppSizes.xl),
-                    const Text(
+                    Text(
                       'Mari berpartisipasi dalam menjaga lingkungan Surabaya tetap asri dan dapatkan imbalan menarik untuk setiap sampah yang Anda daur ulang secara bertanggung jawab.',
                       style: TextStyle(
                         fontSize: 15,
                         height: 1.55,
-                        color: AppColors.textSecondary,
+                        color: AppColors.textS(context),
                       ),
                     ),
                     const SizedBox(height: AppSizes.xxxl),
@@ -162,7 +162,7 @@ class LandingPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: AppSizes.md),
-                        const Expanded(
+                        Expanded(
                           child: Text.rich(
                             TextSpan(
                               children: [
@@ -176,7 +176,7 @@ class LandingPage extends StatelessWidget {
                                 TextSpan(
                                   text: 'warga Surabaya telah\nbergabung',
                                   style: TextStyle(
-                                    color: AppColors.textSecondary,
+                                    color: AppColors.textS(context),
                                   ),
                                 ),
                               ],

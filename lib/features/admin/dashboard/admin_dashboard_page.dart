@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/app_motion.dart';
 import '../../../shared/widgets/labeled_field.dart';
@@ -120,6 +121,37 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage> {
             onPressed: () => Scaffold.of(ctx).openDrawer(),
           ),
         ),
+        actions: [
+          Consumer(
+            builder: (context, innerRef, _) {
+              innerRef.watch(themeModeProvider);
+              final isDark =
+                  Theme.of(context).brightness == Brightness.dark;
+              return Padding(
+                padding: const EdgeInsets.only(right: AppSizes.md),
+                child: IconButton(
+                  tooltip: isDark ? 'Mode Terang' : 'Mode Gelap',
+                  onPressed: () =>
+                      innerRef.read(themeModeProvider.notifier).toggle(),
+                  icon: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 280),
+                    transitionBuilder: (child, anim) => RotationTransition(
+                      turns: Tween<double>(begin: 0.6, end: 1).animate(anim),
+                      child: ScaleTransition(scale: anim, child: child),
+                    ),
+                    child: Icon(
+                      isDark
+                          ? Icons.light_mode_rounded
+                          : Icons.dark_mode_rounded,
+                      key: ValueKey(isDark),
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         top: false,
@@ -499,8 +531,8 @@ class _ActivityTrendCard extends StatelessWidget {
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
-                  getDrawingHorizontalLine: (_) => const FlLine(
-                    color: AppColors.divider,
+                  getDrawingHorizontalLine: (_) => FlLine(
+                    color: AppColors.div(context),
                     strokeWidth: 1,
                   ),
                 ),
@@ -558,7 +590,7 @@ class _ActivityTrendCard extends StatelessWidget {
                           backDrawRodData: BackgroundBarChartRodData(
                             show: true,
                             toY: (hasData ? maxValue + 1 : 4).toDouble(),
-                            color: AppColors.surfaceMuted,
+                            color: AppColors.surfMuted(context),
                           ),
                         ),
                       ],
@@ -914,7 +946,7 @@ class _ProgressRow extends StatelessWidget {
           child: LinearProgressIndicator(
             minHeight: 8,
             value: progress,
-            backgroundColor: AppColors.surfaceMuted,
+            backgroundColor: AppColors.surfMuted(context),
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         ),
@@ -984,8 +1016,8 @@ class _PlatformLogTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.divider)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppColors.div(context))),
       ),
       child: Row(
         children: [
@@ -1092,7 +1124,7 @@ class _UserTile extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         border: showDivider
-            ? const Border(bottom: BorderSide(color: AppColors.divider))
+            ? Border(bottom: BorderSide(color: AppColors.div(context)))
             : null,
       ),
       child: Row(
@@ -1256,7 +1288,7 @@ class _WasteGroupTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: showDivider
-            ? const Border(bottom: BorderSide(color: AppColors.divider))
+            ? Border(bottom: BorderSide(color: AppColors.div(context)))
             : null,
       ),
       child: Column(
@@ -1352,9 +1384,9 @@ class _WasteRequestCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSizes.lg),
       decoration: BoxDecoration(
-        color: AppColors.surfaceMuted,
+        color: AppColors.surfMuted(context),
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.brd(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1579,7 +1611,7 @@ class _MarketplaceViewState extends State<_MarketplaceView> {
     final saved = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.surf(context),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -2001,7 +2033,7 @@ class _SettingsView extends StatelessWidget {
                 subtitle: const Text('Load the latest platform records.'),
                 onTap: onRefresh,
               ),
-              const Divider(height: 1, color: AppColors.divider),
+              Divider(height: 1, color: AppColors.div(context)),
               ListTile(
                 leading: const Icon(
                   Icons.logout_rounded,
@@ -2073,7 +2105,7 @@ class _TransactionGroupTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: showDivider
-            ? const Border(bottom: BorderSide(color: AppColors.divider))
+            ? Border(bottom: BorderSide(color: AppColors.div(context)))
             : null,
       ),
       child: Column(
@@ -2161,9 +2193,9 @@ class _TransactionCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSizes.lg),
       decoration: BoxDecoration(
-        color: AppColors.surfaceMuted,
+        color: AppColors.surfMuted(context),
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.brd(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2275,7 +2307,7 @@ class _SearchBox extends StatelessWidget {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: BorderSide(color: AppColors.brd(context)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
@@ -2304,9 +2336,9 @@ class _Panel extends StatelessWidget {
       width: double.infinity,
       padding: inner,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.surf(context),
         borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.brd(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),

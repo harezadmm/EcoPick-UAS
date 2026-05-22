@@ -154,23 +154,23 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
                       AppSizes.xl,
                     ),
                     children: [
-                      const Text(
+                      Text(
                         'Unggah Foto Sampah',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                         ),
                       ),
                       const SizedBox(height: AppSizes.md),
                       _UploadCard(),
                       const SizedBox(height: AppSizes.xl),
-                      const Text(
+                      Text(
                         'Detail Sampah',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                         ),
                       ),
                       const SizedBox(height: AppSizes.md),
@@ -192,14 +192,14 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
                           keyboardType: const TextInputType.numberWithOptions(
                             decimal: true,
                           ),
-                          suffix: const Padding(
+                          suffix: Padding(
                             padding: EdgeInsets.only(right: AppSizes.lg),
                             child: Align(
                               widthFactor: 1.0,
                               child: Text(
                                 'kg',
                                 style: TextStyle(
-                                  color: AppColors.textTertiary,
+                                  color: AppColors.textT(context),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -218,12 +218,12 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
                         ),
                       ),
                       const SizedBox(height: AppSizes.xl),
-                      const Text(
+                      Text(
                         'Detail Penjemputan',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                         ),
                       ),
                       const SizedBox(height: AppSizes.md),
@@ -281,7 +281,7 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
                                 border: Border.all(
                                   color: selected
                                       ? AppColors.primary
-                                      : AppColors.border,
+                                      : AppColors.brd(context),
                                 ),
                               ),
                               child: Text(
@@ -290,7 +290,7 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
                                   fontWeight: FontWeight.w600,
                                   color: selected
                                       ? AppColors.primary
-                                      : AppColors.textSecondary,
+                                      : AppColors.textS(context),
                                 ),
                               ),
                             ),
@@ -300,12 +300,12 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
                       const SizedBox(height: AppSizes.xl),
                       Row(
                         children: [
-                          const Text(
+                          Text(
                             'Lokasi Penjemputan',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
+                              color: AppColors.textP(context),
                             ),
                           ),
                           const Spacer(),
@@ -359,22 +359,22 @@ class _UploadCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSizes.md),
-            const Text(
+            Text(
               'Ambil Foto atau Unggah',
               style: TextStyle(
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: AppColors.textP(context),
               ),
             ),
             const SizedBox(height: 4),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: AppSizes.xl),
               child: Text(
                 'Pastikan foto sampah terlihat jelas agar kurir mudah mengenali',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,
-                  color: AppColors.textTertiary,
+                  color: AppColors.textT(context),
                 ),
               ),
             ),
@@ -477,20 +477,20 @@ class _CategoryDropdown extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSizes.lg),
       decoration: BoxDecoration(
-        color: AppColors.surfaceMuted,
+        color: AppColors.surfMuted(context),
         borderRadius: BorderRadius.circular(AppSizes.radiusPill),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<WasteCategory>(
           value: selected,
           isExpanded: true,
-          hint: const Text(
+          hint: Text(
             'Pilih kategori sampah',
-            style: TextStyle(color: AppColors.textTertiary),
+            style: TextStyle(color: AppColors.textT(context)),
           ),
-          icon: const Icon(
+          icon: Icon(
             Icons.keyboard_arrow_down_rounded,
-            color: AppColors.textTertiary,
+            color: AppColors.textT(context),
           ),
           items: categories
               .map(
@@ -530,7 +530,7 @@ class _DateChip extends StatelessWidget {
           color: selected ? AppColors.primary : AppColors.surface,
           borderRadius: BorderRadius.circular(AppSizes.radiusLg),
           border: Border.all(
-            color: selected ? AppColors.primary : AppColors.border,
+            color: selected ? AppColors.primary : AppColors.brd(context),
           ),
         ),
         child: Column(
@@ -540,7 +540,7 @@ class _DateChip extends StatelessWidget {
               day,
               style: TextStyle(
                 fontSize: 12,
-                color: selected ? Colors.white : AppColors.textSecondary,
+                color: selected ? Colors.white : AppColors.textS(context),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -550,7 +550,7 @@ class _DateChip extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
-                color: selected ? Colors.white : AppColors.textPrimary,
+                color: selected ? Colors.white : AppColors.textP(context),
               ),
             ),
           ],
@@ -602,7 +602,7 @@ class _LocationCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSizes.md),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -610,7 +610,7 @@ class _LocationCard extends StatelessWidget {
                         'Rumah Utama',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                         ),
                       ),
                       SizedBox(height: 2),
@@ -618,7 +618,7 @@ class _LocationCard extends StatelessWidget {
                         'Jl. Hijau No. 12, Kel. Lestari, Kec. Bumi, Jakarta Selatan, 12345',
                         style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textSecondary,
+                          color: AppColors.textS(context),
                         ),
                       ),
                     ],
@@ -653,9 +653,9 @@ class _BottomBar extends StatelessWidget {
           horizontal: AppSizes.xl,
           vertical: AppSizes.md,
         ),
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
-          border: Border(top: BorderSide(color: AppColors.divider)),
+        decoration: BoxDecoration(
+          color: AppColors.surf(context),
+          border: Border(top: BorderSide(color: AppColors.div(context))),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -677,10 +677,10 @@ class _BottomBar extends StatelessWidget {
                     size: 18,
                   ),
                   const SizedBox(width: AppSizes.sm),
-                  const Text(
+                  Text(
                     'Estimasi Pendapatan',
                     style: TextStyle(
-                      color: AppColors.textSecondary,
+                      color: AppColors.textS(context),
                       fontWeight: FontWeight.w500,
                     ),
                   ),

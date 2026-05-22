@@ -35,13 +35,13 @@ class EcoDropSuccessPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    children: const [
+                    children: [
                       Text(
                         'Ringkasan setoran',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                         ),
                       ),
                       Spacer(),
@@ -52,22 +52,22 @@ class EcoDropSuccessPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: AppSizes.lg),
-                  _kv('Lokasi setor', 'Bank Sampah Induk\nSurabaya'),
-                  _kv('Tanggal setor', 'Rabu, 12 Juni 2026'),
-                  _kv('Waktu kirim', '10:24'),
+                  _kv(context, 'Lokasi setor', 'Bank Sampah Induk\nSurabaya'),
+                  _kv(context, 'Tanggal setor', 'Rabu, 12 Juni 2026'),
+                  _kv(context, 'Waktu kirim', '10:24'),
                   const Divider(height: 32),
-                  _kv('Kategori sampah', 'Botol plastik'),
-                  _kv('Berat', '3.5 kg'),
+                  _kv(context, 'Kategori sampah', 'Botol plastik'),
+                  _kv(context, 'Berat', '3.5 kg'),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: AppSizes.sm,
                     ),
                     child: Row(
-                      children: const [
+                      children: [
                         Expanded(
                           child: Text(
                             'Foto bukti',
-                            style: TextStyle(color: AppColors.textSecondary),
+                            style: TextStyle(color: AppColors.textS(context)),
                           ),
                         ),
                         Row(
@@ -101,11 +101,11 @@ class EcoDropSuccessPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSizes.radiusPill),
                     ),
                     child: Row(
-                      children: const [
+                      children: [
                         Text(
                           'Estimasi GreenCoin',
                           style: TextStyle(
-                            color: AppColors.textSecondary,
+                            color: AppColors.textS(context),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -121,14 +121,14 @@ class EcoDropSuccessPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppSizes.md),
+                  SizedBox(height: AppSizes.md),
                   Row(
-                    children: const [
+                    children: [
                       Text(
                         'NOMOR REFERENSI',
                         style: TextStyle(
                           fontSize: 11,
-                          color: AppColors.textTertiary,
+                          color: AppColors.textT(context),
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.5,
                         ),
@@ -138,7 +138,7 @@ class EcoDropSuccessPage extends StatelessWidget {
                         'EDP-260612-0094',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                         ),
                       ),
                     ],
@@ -156,11 +156,11 @@ class EcoDropSuccessPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Langkah selanjutnya',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: AppColors.textP(context),
                     ),
                   ),
                   const SizedBox(height: AppSizes.md),
@@ -192,10 +192,10 @@ class EcoDropSuccessPage extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   e.value,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 13,
                                     height: 1.4,
-                                    color: AppColors.textSecondary,
+                                    color: AppColors.textS(context),
                                   ),
                                 ),
                               ),
@@ -217,7 +217,7 @@ class EcoDropSuccessPage extends StatelessWidget {
     );
   }
 
-  Widget _kv(String k, String v) => Padding(
+  Widget _kv(BuildContext context, String k, String v) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,15 +225,15 @@ class EcoDropSuccessPage extends StatelessWidget {
             Expanded(
               child: Text(
                 k,
-                style: const TextStyle(color: AppColors.textSecondary),
+                style: TextStyle(color: AppColors.textS(context)),
               ),
             ),
             Text(
               v,
               textAlign: TextAlign.right,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: AppColors.textP(context),
               ),
             ),
           ],

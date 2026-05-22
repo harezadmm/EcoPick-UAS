@@ -35,13 +35,13 @@ class EcoPickSuccessPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    children: const [
+                    children: [
                       Text(
                         'Ringkasan\npenjemputan',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                         ),
                       ),
                       Spacer(),
@@ -62,9 +62,9 @@ class EcoPickSuccessPage extends StatelessWidget {
                     value: 'Jl. Pemuda No. 12, Surabaya',
                     icon: Icons.location_on_outlined,
                   ),
-                  const Divider(height: 32),
+                  Divider(height: 32),
                   Row(
-                    children: const [
+                    children: [
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +73,7 @@ class EcoPickSuccessPage extends StatelessWidget {
                               'KATEGORI',
                               style: TextStyle(
                                 fontSize: 10,
-                                color: AppColors.textTertiary,
+                                color: AppColors.textT(context),
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: 0.5,
                               ),
@@ -83,7 +83,7 @@ class EcoPickSuccessPage extends StatelessWidget {
                               'Plastik & Kertas',
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.textPrimary,
+                                color: AppColors.textP(context),
                               ),
                             ),
                           ],
@@ -97,7 +97,7 @@ class EcoPickSuccessPage extends StatelessWidget {
                               'ESTIMASI BERAT',
                               style: TextStyle(
                                 fontSize: 10,
-                                color: AppColors.textTertiary,
+                                color: AppColors.textT(context),
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: 0.5,
                               ),
@@ -107,7 +107,7 @@ class EcoPickSuccessPage extends StatelessWidget {
                               '5.2 kg',
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.textPrimary,
+                                color: AppColors.textP(context),
                               ),
                             ),
                           ],
@@ -126,14 +126,14 @@ class EcoPickSuccessPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSizes.radiusPill),
                     ),
                     child: Row(
-                      children: const [
+                      children: [
                         Icon(Icons.savings_outlined,
                             color: AppColors.primary, size: 18),
                         SizedBox(width: AppSizes.sm),
                         Text(
                           'Estimasi GreenCoin',
                           style: TextStyle(
-                            color: AppColors.textSecondary,
+                            color: AppColors.textS(context),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -150,12 +150,12 @@ class EcoPickSuccessPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSizes.md),
-                  const Center(
+                  Center(
                     child: Text(
                       'Nomor Referensi: EPK-260612-0182',
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.textTertiary,
+                        color: AppColors.textT(context),
                       ),
                     ),
                   ),
@@ -176,7 +176,7 @@ class EcoPickSuccessPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    children: const [
+                    children: [
                       Icon(Icons.info_outline,
                           size: 16, color: AppColors.primary),
                       SizedBox(width: 6),
@@ -184,7 +184,7 @@ class EcoPickSuccessPage extends StatelessWidget {
                         'Langkah selanjutnya',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textP(context),
                         ),
                       ),
                     ],
@@ -219,10 +219,10 @@ class EcoPickSuccessPage extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   e.value,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 13,
                                     height: 1.4,
-                                    color: AppColors.textSecondary,
+                                    color: AppColors.textS(context),
                                   ),
                                 ),
                               ),
@@ -270,7 +270,7 @@ class _RowItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: AppColors.textTertiary),
+          Icon(icon, size: 18, color: AppColors.textT(context)),
           const SizedBox(width: AppSizes.sm),
           Expanded(
             child: Column(
@@ -278,9 +278,9 @@ class _RowItem extends StatelessWidget {
               children: [
                 Text(
                   label.toUpperCase(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
-                    color: AppColors.textTertiary,
+                    color: AppColors.textT(context),
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.5,
                   ),
@@ -288,9 +288,9 @@ class _RowItem extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textP(context),
                   ),
                 ),
               ],

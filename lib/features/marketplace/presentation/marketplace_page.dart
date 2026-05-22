@@ -84,29 +84,29 @@ class MarketplacePage extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: AppSizes.lg),
-                  const Text(
+                  Text(
                     'Tukar GreenCoin',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: AppColors.textP(context),
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
+                  Text(
                     'Pilih produk kebutuhan sehari-hari Anda',
-                    style: TextStyle(color: AppColors.textSecondary),
+                    style: TextStyle(color: AppColors.textS(context)),
                   ),
                   const SizedBox(height: AppSizes.md),
                   if (list.isEmpty)
-                    const AppCard(
+                    AppCard(
                       padding: EdgeInsets.all(AppSizes.xl),
                       child: Column(
                         children: [
                           Icon(
                             Icons.inventory_2_outlined,
                             size: 36,
-                            color: AppColors.textTertiary,
+                            color: AppColors.textT(context),
                           ),
                           SizedBox(height: AppSizes.sm),
                           Text(
@@ -119,7 +119,7 @@ class MarketplacePage extends ConsumerWidget {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 12,
-                              color: AppColors.textTertiary,
+                              color: AppColors.textT(context),
                             ),
                           ),
                         ],
@@ -260,18 +260,18 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
                   alignment: Alignment.center,
                   child: Text(
                     p.displayEmoji,
-                    style: const TextStyle(fontSize: 32),
+                    style: TextStyle(fontSize: 32),
                   ),
                 ),
               ),
               const SizedBox(height: AppSizes.lg),
-              const Center(
+              Center(
                 child: Text(
                   'Konfirmasi Penukaran',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textP(context),
                   ),
                 ),
               ),
@@ -282,7 +282,7 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.textSecondary,
+                    color: AppColors.textS(context),
                   ),
                 ),
               ),
@@ -290,7 +290,7 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
               Container(
                 padding: const EdgeInsets.all(AppSizes.md),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceMuted,
+                  color: AppColors.surfMuted(context),
                   borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                 ),
                 child: Column(
@@ -304,7 +304,7 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
                         Formatters.greenCoin(widget.currentBalance)),
                     const SizedBox(height: 6),
                     _kv('Sisa saldo', Formatters.greenCoin(remaining),
-                        valueColor: AppColors.textPrimary, bold: true),
+                        valueColor: AppColors.textP(context), bold: true),
                   ],
                 ),
               ),
@@ -316,16 +316,16 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
                       onPressed: () => Navigator.of(ctx).pop(false),
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size.fromHeight(46),
-                        side: const BorderSide(color: AppColors.border),
+                        side: BorderSide(color: AppColors.brd(context)),
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(AppSizes.radiusPill),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Batal',
                         style: TextStyle(
-                          color: AppColors.textSecondary,
+                          color: AppColors.textS(context),
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -368,8 +368,8 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
         Expanded(
           child: Text(
             key,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              color: AppColors.textS(context),
               fontSize: 13,
             ),
           ),
@@ -377,7 +377,7 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
         Text(
           value,
           style: TextStyle(
-            color: valueColor ?? AppColors.textPrimary,
+            color: valueColor ?? AppColors.textP(context),
             fontSize: 13,
             fontWeight: bold ? FontWeight.w800 : FontWeight.w700,
           ),
@@ -416,9 +416,9 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
                     p.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: AppColors.textP(context),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -426,25 +426,25 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
                     p.description,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: AppColors.textTertiary,
+                      color: AppColors.textT(context),
                       height: 1.3,
                     ),
                   ),
                   const SizedBox(height: AppSizes.sm),
                   Text(
                     Formatters.greenCoin(p.priceGc),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.primary,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   Text(
                     'Stok: ${p.stock}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 10,
-                      color: AppColors.textTertiary,
+                      color: AppColors.textT(context),
                     ),
                   ),
                   const Spacer(),

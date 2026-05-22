@@ -121,23 +121,23 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                             height: 4,
                             margin: const EdgeInsets.only(bottom: AppSizes.lg),
                             decoration: BoxDecoration(
-                              color: AppColors.border,
+                              color: AppColors.brd(context),
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Daftar Akun Baru',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
+                            color: AppColors.textP(context),
                           ),
                         ),
                         const SizedBox(height: AppSizes.xs),
-                        const Text(
+                        Text(
                           'Lengkapi data diri untuk mulai menabung sampah.',
-                          style: TextStyle(color: AppColors.textSecondary),
+                          style: TextStyle(color: AppColors.textS(context)),
                         ),
                         const SizedBox(height: AppSizes.xl),
                         LabeledField(
@@ -186,7 +186,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                                 _obscure
                                     ? Icons.visibility_off_outlined
                                     : Icons.visibility_outlined,
-                                color: AppColors.textTertiary,
+                                color: AppColors.textT(context),
                               ),
                               onPressed: () =>
                                   setState(() => _obscure = !_obscure),
@@ -200,9 +200,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           onPressed: _submit,
                         ),
                         const SizedBox(height: AppSizes.lg),
-                        const Row(
+                        Row(
                           children: [
-                            Expanded(child: Divider(color: AppColors.border)),
+                            Expanded(child: Divider(color: AppColors.brd(context))),
                             Padding(
                               padding: EdgeInsets.symmetric(
                                 horizontal: AppSizes.md,
@@ -211,11 +211,11 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                                 'Atau daftar dengan',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: AppColors.textTertiary,
+                                  color: AppColors.textT(context),
                                 ),
                               ),
                             ),
-                            Expanded(child: Divider(color: AppColors.border)),
+                            Expanded(child: Divider(color: AppColors.brd(context))),
                           ],
                         ),
                         const SizedBox(height: AppSizes.md),
@@ -229,10 +229,10 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                                   color: Color(0xFFEA4335),
                                   size: 28,
                                 ),
-                                label: const Text(
+                                label: Text(
                                   'Google',
                                   style: TextStyle(
-                                    color: AppColors.textPrimary,
+                                    color: AppColors.textP(context),
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -254,10 +254,10 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                                   Icons.facebook_rounded,
                                   color: Color(0xFF1877F2),
                                 ),
-                                label: const Text(
+                                label: Text(
                                   'Facebook',
                                   style: TextStyle(
-                                    color: AppColors.textPrimary,
+                                    color: AppColors.textP(context),
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -277,10 +277,10 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                         Center(
                           child: Wrap(
                             children: [
-                              const Text(
+                              Text(
                                 'Sudah punya akun? ',
                                 style:
-                                    TextStyle(color: AppColors.textSecondary),
+                                    TextStyle(color: AppColors.textS(context)),
                               ),
                               GestureDetector(
                                 onTap: () => context.go('/login'),
