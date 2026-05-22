@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/validators.dart';
-import '../../../shared/widgets/eco_logo.dart';
 import '../../../shared/widgets/labeled_field.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../data/quick_login_store.dart';
@@ -102,42 +102,24 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              Container(
-                height: 280,
+              SizedBox(
+                height: 300,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      AppColors.primary.withValues(alpha: 0.95),
-                      AppColors.primaryDark,
-                    ],
-                  ),
-                ),
-                child: SafeArea(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const EcoLogo(size: 56, dark: true),
-                      const SizedBox(height: AppSizes.md),
-                      const Text(
-                        'EcoPoin',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                        ),
+                child: Image.asset(
+                  AppIcons.loginHeader,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                  errorBuilder: (_, __, ___) => Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColors.primary.withValues(alpha: 0.95),
+                          AppColors.primaryDark,
+                        ],
                       ),
-                      const SizedBox(height: AppSizes.xs),
-                      Text(
-                        'Langkah kecil untuk bumi yang lebih hijau.',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.9),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),

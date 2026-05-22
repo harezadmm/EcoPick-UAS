@@ -29,6 +29,10 @@ class AppIcons {
   static const String vegetableOil = 'assets/icons/vegetable-oil.png';
   static const String detergentPowder = 'assets/icons/detergent-powder.png';
 
+  // Hero header images (login & register)
+  static const String loginHeader = 'assets/images/login_header.png';
+  static const String registerHeader = 'assets/images/register_header.png';
+
   /// Pick a product asset path based on the product name. Returns `null` when
   /// no keyword matches; UI should fall back to emoji or generic icon.
   static String? forProductName(String name) {

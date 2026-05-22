@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/utils/validators.dart';
 import '../../../shared/widgets/labeled_field.dart';
@@ -73,53 +74,25 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                height: 260,
+              SizedBox(
+                height: 280,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      const Color(0xFF2C5F4F),
-                      AppColors.primaryDark.withValues(alpha: 0.95),
-                    ],
+                child: Image.asset(
+                  AppIcons.registerHeader,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                  errorBuilder: (_, __, ___) => Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          const Color(0xFF2C5F4F),
+                          AppColors.primaryDark.withValues(alpha: 0.95),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: const Icon(
-                        Icons.eco_rounded,
-                        color: AppColors.primary,
-                        size: 36,
-                      ),
-                    ),
-                    const SizedBox(height: AppSizes.md),
-                    const Text(
-                      'EcoPoin',
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: AppSizes.xs),
-                    Text(
-                      'Wujudkan Bumi yang Lebih Hijau',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.9),
-                      ),
-                    ),
-                  ],
                 ),
               ),
               Transform.translate(
