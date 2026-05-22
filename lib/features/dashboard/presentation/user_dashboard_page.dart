@@ -11,6 +11,8 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_motion.dart';
 import '../../../shared/widgets/eco_logo.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../greencoin/models/greencoin_transaction.dart';
+import '../../greencoin/providers/greencoin_provider.dart';
 import '../models/dashboard_summary.dart';
 import '../providers/dashboard_provider.dart';
 
@@ -29,10 +31,20 @@ class UserDashboardPage extends ConsumerWidget {
           children: [
             _Header(name: user?.fullName.split(' ').first ?? 'User'),
             Expanded(
-              child: dashboard.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Center(child: Text(e.toString())),
-                data: (data) => _Body(data: data, fullName: user?.fullName),
+              child: RefreshIndicator(
+                color: AppColors.primary,
+                onRefresh: () async {
+                  ref.invalidate(dashboardProvider);
+                  ref.invalidate(greenCoinTransactionsProvider);
+                  ref.invalidate(greenCoinBalanceProvider);
+                  await ref.read(dashboardProvider.future);
+                },
+                child: dashboard.when(
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (e, _) => Center(child: Text(e.toString())),
+                  data: (data) => _Body(data: data, fullName: user?.fullName),
+                ),
               ),
             ),
           ],
@@ -98,14 +110,15 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _Body extends StatelessWidget {
+class _Body extends ConsumerWidget {
   final DashboardSummary data;
   final String? fullName;
   const _Body({required this.data, this.fullName});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(
         AppSizes.xl,
         AppSizes.sm,
@@ -295,43 +308,190 @@ class _Body extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSizes.sm),
-              if (data.totalTransactions == 0)
-                const AppCard(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppSizes.lg,
-                    vertical: AppSizes.xl,
-                  ),
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.receipt_long_outlined,
-                        size: 32,
-                        color: AppColors.textTertiary,
-                      ),
-                      SizedBox(height: AppSizes.sm),
-                      Text(
-                        'Belum ada transaksi',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Buat permintaan EcoPick atau setor EcoDrop\nuntuk mulai menabung GreenCoin.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: AppColors.textTertiary,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              _RecentTransactionsList(),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+class _RecentTransactionsList extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final txnsAsync = ref.watch(greenCoinTransactionsProvider);
+    return txnsAsync.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: AppSizes.lg),
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      ),
+      error: (_, __) => const AppCard(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSizes.lg,
+          vertical: AppSizes.lg,
+        ),
+        child: Text(
+          'Gagal memuat transaksi terbaru',
+          style: TextStyle(color: AppColors.textTertiary),
+        ),
+      ),
+      data: (txns) {
+        if (txns.isEmpty) {
+          return const AppCard(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSizes.lg,
+              vertical: AppSizes.xl,
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.receipt_long_outlined,
+                  size: 32,
+                  color: AppColors.textTertiary,
+                ),
+                SizedBox(height: AppSizes.sm),
+                Text(
+                  'Belum ada transaksi',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Buat permintaan EcoPick atau setor EcoDrop\nuntuk mulai menabung GreenCoin.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.textTertiary,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        final top = txns.take(3).toList();
+        return Column(
+          children: [
+            for (var i = 0; i < top.length; i++) ...[
+              MotionFadeSlide(
+                delayMs: 80 * i,
+                child: _RecentTxnTile(txn: top[i]),
+              ),
+              if (i < top.length - 1) const SizedBox(height: AppSizes.sm),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _RecentTxnTile extends StatelessWidget {
+  final GreenCoinTransaction txn;
+  const _RecentTxnTile({required this.txn});
+
+  @override
+  Widget build(BuildContext context) {
+    final (icon, title, iconBg, iconColor) = switch (txn.sourceType) {
+      'ecopick' => (
+          Icons.local_shipping_rounded,
+          'EcoPick',
+          AppColors.primaryLight,
+          AppColors.primary,
+        ),
+      'ecodrop' => (
+          Icons.location_on_rounded,
+          'EcoDrop',
+          AppColors.primaryLight,
+          AppColors.primary,
+        ),
+      'withdraw' => (
+          Icons.account_balance_wallet_outlined,
+          'Tarik Dana',
+          const Color(0xFFFFEDD5),
+          const Color(0xFFEA580C),
+        ),
+      'marketplace' => (
+          Icons.shopping_bag_outlined,
+          'Marketplace',
+          const Color(0xFFDBEAFE),
+          const Color(0xFF1D4ED8),
+        ),
+      _ => (
+          Icons.swap_horiz_rounded,
+          'Penyesuaian',
+          AppColors.surfaceMuted,
+          AppColors.textSecondary,
+        ),
+    };
+    final amount =
+        '${txn.isInflow ? '+' : ''}${Formatters.greenCoin(txn.amountGc.abs())}';
+    return AppCard(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSizes.md,
+        vertical: AppSizes.md,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
+            child: Icon(icon, size: 20, color: iconColor),
+          ),
+          const SizedBox(width: AppSizes.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  Formatters.dateTime(txn.createdAt),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textTertiary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                amount,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  color: txn.isInflow
+                      ? AppColors.primary
+                      : AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                txn.status.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textTertiary,
+                  letterSpacing: 0.4,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

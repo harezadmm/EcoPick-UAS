@@ -11,6 +11,7 @@ import '../../../shared/widgets/labeled_field.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../dashboard/providers/dashboard_provider.dart';
+import '../../greencoin/providers/greencoin_provider.dart';
 import '../data/ecopick_service.dart';
 import '../models/waste_category.dart';
 import '../providers/ecopick_provider.dart';
@@ -103,6 +104,8 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
           notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
         );
         ref.invalidate(dashboardProvider);
+        ref.invalidate(greenCoinTransactionsProvider);
+        ref.invalidate(greenCoinBalanceProvider);
       }
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

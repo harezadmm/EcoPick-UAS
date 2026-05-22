@@ -11,6 +11,7 @@ import '../../../shared/widgets/labeled_field.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../dashboard/providers/dashboard_provider.dart';
+import '../../greencoin/providers/greencoin_provider.dart';
 import '../../ecopick/models/waste_category.dart';
 import '../../ecopick/presentation/ecopick_page.dart';
 import '../../ecopick/providers/ecopick_provider.dart';
@@ -98,6 +99,8 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
           notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
         );
         ref.invalidate(dashboardProvider);
+        ref.invalidate(greenCoinTransactionsProvider);
+        ref.invalidate(greenCoinBalanceProvider);
       }
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
