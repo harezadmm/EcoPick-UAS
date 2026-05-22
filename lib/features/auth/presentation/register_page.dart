@@ -8,6 +8,7 @@ import '../../../core/constants/app_sizes.dart';
 import '../../../core/utils/validators.dart';
 import '../../../shared/widgets/labeled_field.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/success_confetti_dialog.dart';
 import '../data/quick_login_store.dart';
 import '../providers/auth_provider.dart';
 
@@ -60,6 +61,17 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     await _quickLoginStore.saveAccount(
       email: _email.text.trim(),
       password: _password.text,
+    );
+    if (!mounted) return;
+
+    // Celebrate the new account with confetti before redirecting.
+    await SuccessConfettiDialog.show(
+      context,
+      title: 'Selamat! 🎉',
+      message:
+          'Akun ${user.fullName.isEmpty ? "Anda" : user.fullName} berhasil dibuat. Mari mulai menabung sampah dan dapatkan GreenCoin!',
+      emoji: '🌱',
+      primaryActionLabel: 'Lanjut ke Beranda',
     );
     if (!mounted) return;
     context.go('/home');
