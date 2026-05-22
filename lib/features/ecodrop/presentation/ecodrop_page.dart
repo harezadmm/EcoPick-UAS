@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_motion.dart';
 import '../../../shared/widgets/labeled_field.dart';
@@ -200,6 +201,7 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                           keyboardType: const TextInputType.numberWithOptions(
                             decimal: true,
                           ),
+                          onChanged: (_) => setState(() {}),
                           suffix: const Padding(
                             padding: EdgeInsets.only(right: AppSizes.lg),
                             child: Align(
@@ -291,22 +293,67 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                         top: BorderSide(color: AppColors.divider),
                       ),
                     ),
-                    child: Row(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
-                          child: SecondaryButton(
-                            label: 'Batal',
-                            onPressed: () => context.go('/home'),
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeOut,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSizes.lg,
+                            vertical: AppSizes.sm,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primarySubtle,
+                            borderRadius:
+                                BorderRadius.circular(AppSizes.radiusPill),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.savings_outlined,
+                                color: AppColors.primary,
+                                size: 18,
+                              ),
+                              const SizedBox(width: AppSizes.sm),
+                              const Text(
+                                'Estimasi Pendapatan',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                '+${Formatters.greenCoin(_estimatedGc)}',
+                                style: const TextStyle(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: AppSizes.md),
-                        Expanded(
-                          flex: 2,
-                          child: PrimaryButton(
-                            label: 'Konfirmasi',
-                            loading: _submitting,
-                            onPressed: _onConfirm,
-                          ),
+                        const SizedBox(height: AppSizes.md),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: SecondaryButton(
+                                label: 'Batal',
+                                onPressed: () => context.go('/home'),
+                              ),
+                            ),
+                            const SizedBox(width: AppSizes.md),
+                            Expanded(
+                              flex: 2,
+                              child: PrimaryButton(
+                                label: 'Konfirmasi',
+                                loading: _submitting,
+                                onPressed: _onConfirm,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
