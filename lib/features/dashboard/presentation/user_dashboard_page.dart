@@ -359,22 +359,29 @@ class _MetricCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: iconBg,
-              borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.6, end: 1),
+            duration: const Duration(milliseconds: 420),
+            curve: Curves.easeOutBack,
+            builder: (context, scale, child) =>
+                Transform.scale(scale: scale, child: child),
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: iconBg,
+                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+              ),
+              padding: const EdgeInsets.all(4),
+              child: assetPath != null
+                  ? Image.asset(
+                      assetPath!,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) =>
+                          Icon(icon, size: 18, color: iconColor),
+                    )
+                  : Icon(icon, size: 18, color: iconColor),
             ),
-            padding: const EdgeInsets.all(4),
-            child: assetPath != null
-                ? Image.asset(
-                    assetPath!,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) =>
-                        Icon(icon, size: 18, color: iconColor),
-                  )
-                : Icon(icon, size: 18, color: iconColor),
           ),
           const Spacer(),
           Text(
@@ -387,16 +394,60 @@ class _MetricCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 2),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
-            ),
-          ),
+          _AnimatedMetricValue(value: value),
         ],
       ),
+    );
+  }
+}
+
+/// Animates the metric value with a numeric count-up effect if the value
+/// contains a leading number (e.g. "2.500 GC", "45 kg", "12", "15.2 kg").
+/// Falls back to plain text when no number can be parsed.
+class _AnimatedMetricValue extends StatelessWidget {
+  final String value;
+
+  const _AnimatedMetricValue({required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    final match = RegExp(r'^([\d\.,]+)(.*)$').firstMatch(value.trim());
+    if (match == null) {
+      return Text(
+        value,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
+          color: AppColors.textPrimary,
+        ),
+      );
+    }
+    final numStr = match.group(1)!;
+    final suffix = match.group(2) ?? '';
+    final target = double.tryParse(
+          numStr.replaceAll('.', '').replaceAll(',', '.'),
+        ) ??
+        0;
+    final isInteger = !numStr.contains(',') && !numStr.contains('.') ||
+        target == target.truncate();
+
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: target),
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeOutCubic,
+      builder: (context, animated, _) {
+        final display = isInteger
+            ? Formatters.compactNumber(animated.round())
+            : animated.toStringAsFixed(1).replaceAll('.', ',');
+        return Text(
+          '$display$suffix',
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
+          ),
+        );
+      },
     );
   }
 }
@@ -407,14 +458,44 @@ class _WeeklyChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final maxVal = weights.reduce((a, b) => a > b ? a : b);
+    final maxVal = weights.isEmpty
+        ? 0.0
+        : weights.reduce((a, b) => a > b ? a : b);
     const days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    final hasData = maxVal > 0;
 
     return BarChart(
       BarChartData(
         alignment: BarChartAlignment.spaceAround,
-        maxY: maxVal * 1.3,
-        barTouchData: BarTouchData(enabled: false),
+        maxY: hasData ? maxVal * 1.35 : 8,
+        barTouchData: BarTouchData(
+          enabled: false,
+          touchTooltipData: BarTouchTooltipData(
+            getTooltipColor: (_) => AppColors.primary,
+            tooltipRoundedRadius: AppSizes.radiusPill,
+            tooltipPadding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 4,
+            ),
+            tooltipMargin: 6,
+            fitInsideHorizontally: true,
+            fitInsideVertically: true,
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              final value = rod.toY;
+              final label = value == value.truncate()
+                  ? '${value.toInt()}kg'
+                  : '${value.toStringAsFixed(1)}kg';
+              return BarTooltipItem(
+                label,
+                const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                ),
+              );
+            },
+          ),
+        ),
         gridData: const FlGridData(show: false),
         borderData: FlBorderData(show: false),
         titlesData: FlTitlesData(
@@ -427,19 +508,19 @@ class _WeeklyChart extends StatelessWidget {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 24,
+              reservedSize: 26,
               getTitlesWidget: (value, meta) {
                 final idx = value.toInt();
                 if (idx < 0 || idx >= days.length) return const SizedBox();
-                final isMax = weights[idx] == maxVal;
+                final isMax = hasData && weights[idx] == maxVal;
                 return Padding(
-                  padding: const EdgeInsets.only(top: 6),
+                  padding: const EdgeInsets.only(top: 8),
                   child: Text(
                     days[idx],
                     style: TextStyle(
                       fontSize: 11,
                       color: isMax ? AppColors.primary : AppColors.textTertiary,
-                      fontWeight: isMax ? FontWeight.w700 : FontWeight.w500,
+                      fontWeight: isMax ? FontWeight.w800 : FontWeight.w500,
                     ),
                   ),
                 );
@@ -448,23 +529,24 @@ class _WeeklyChart extends StatelessWidget {
           ),
         ),
         barGroups: List.generate(weights.length, (i) {
-          final isMax = weights[i] == maxVal;
+          final value = weights[i];
+          final isMax = hasData && value == maxVal;
           return BarChartGroupData(
             x: i,
             barRods: [
               BarChartRodData(
-                toY: weights[i],
-                width: 22,
+                toY: value <= 0 ? 0.3 : value,
+                width: 24,
                 color: isMax ? AppColors.primary : AppColors.primaryLight,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(8),
-                ),
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
               ),
             ],
-            showingTooltipIndicators: isMax ? [0] : [],
+            showingTooltipIndicators: isMax ? [0] : const [],
           );
         }),
       ),
+      swapAnimationDuration: const Duration(milliseconds: 700),
+      swapAnimationCurve: Curves.easeOutCubic,
     );
   }
 }
