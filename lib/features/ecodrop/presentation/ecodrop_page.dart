@@ -39,8 +39,17 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
 
   int get _estimatedGc {
     final weight = double.tryParse(_weight.text.replaceAll(',', '.')) ?? 0;
+    if (weight <= 0) return 0;
     final rate = _selectedCategory?.greenCoinPerKg ?? 0;
-    return (weight * rate).round();
+    final result = (weight * rate).round();
+    return result < 0 ? 0 : result;
+  }
+
+  bool get _weightInvalid {
+    final raw = _weight.text.replaceAll(',', '.').trim();
+    if (raw.isEmpty) return false;
+    final w = double.tryParse(raw);
+    return w == null || w <= 0;
   }
 
   Future<void> _showInvalidPopup(String message) async {
@@ -203,7 +212,11 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                           hint: '0.0',
                           keyboardType: const TextInputType.numberWithOptions(
                             decimal: true,
+                            signed: false,
                           ),
+                          inputFormatters: const [
+                            PositiveNumberInputFormatter(),
+                          ],
                           onChanged: (_) => setState(() {}),
                           suffix: Padding(
                             padding: EdgeInsets.only(right: AppSizes.lg),
@@ -300,37 +313,57 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeOut,
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeOutCubic,
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppSizes.lg,
                             vertical: AppSizes.sm,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primarySubtle,
+                            color: _weightInvalid
+                                ? const Color(0x1AEF4444)
+                                : AppColors.primarySubtle,
                             borderRadius:
                                 BorderRadius.circular(AppSizes.radiusPill),
+                            border: _weightInvalid
+                                ? Border.all(
+                                    color: AppColors.danger
+                                        .withValues(alpha: 0.4),
+                                  )
+                                : null,
                           ),
                           child: Row(
                             children: [
-                              const Icon(
-                                Icons.savings_outlined,
-                                color: AppColors.primary,
+                              Icon(
+                                _weightInvalid
+                                    ? Icons.error_outline
+                                    : Icons.savings_outlined,
+                                color: _weightInvalid
+                                    ? AppColors.danger
+                                    : AppColors.primary,
                                 size: 18,
                               ),
                               const SizedBox(width: AppSizes.sm),
                               Text(
-                                'Estimasi Pendapatan',
+                                _weightInvalid
+                                    ? 'Nominal Tidak Valid'
+                                    : 'Estimasi Pendapatan',
                                 style: TextStyle(
-                                  color: AppColors.textS(context),
+                                  color: _weightInvalid
+                                      ? AppColors.danger
+                                      : AppColors.textS(context),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                               const Spacer(),
                               Text(
-                                '+${Formatters.greenCoin(_estimatedGc)}',
-                                style: const TextStyle(
-                                  color: AppColors.primary,
+                                _weightInvalid
+                                    ? '—'
+                                    : '+${Formatters.greenCoin(_estimatedGc)}',
+                                style: TextStyle(
+                                  color: _weightInvalid
+                                      ? AppColors.danger
+                                      : AppColors.primary,
                                   fontWeight: FontWeight.w800,
                                   fontSize: 15,
                                 ),

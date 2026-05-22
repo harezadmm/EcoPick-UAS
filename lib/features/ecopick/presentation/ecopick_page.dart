@@ -43,8 +43,17 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
 
   int get _estimatedGc {
     final weight = double.tryParse(_weightCtrl.text.replaceAll(',', '.')) ?? 0;
+    if (weight <= 0) return 0;
     final rate = _selectedCategory?.greenCoinPerKg ?? 0;
-    return (weight * rate).round();
+    final result = (weight * rate).round();
+    return result < 0 ? 0 : result;
+  }
+
+  bool get _weightInvalid {
+    final raw = _weightCtrl.text.replaceAll(',', '.').trim();
+    if (raw.isEmpty) return false; // empty is "neutral", not invalid
+    final w = double.tryParse(raw);
+    return w == null || w <= 0;
   }
 
   Future<void> _showInvalidPopup(String message) async {
@@ -191,7 +200,11 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
                           hint: 'Contoh: 5',
                           keyboardType: const TextInputType.numberWithOptions(
                             decimal: true,
+                            signed: false,
                           ),
+                          inputFormatters: const [
+                            PositiveNumberInputFormatter(),
+                          ],
                           suffix: Padding(
                             padding: EdgeInsets.only(right: AppSizes.lg),
                             child: Align(
@@ -325,6 +338,7 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
                 delayMs: 180,
                 child: _BottomBar(
                   estimated: _estimatedGc,
+                  invalid: _weightInvalid,
                   submitting: _submitting,
                   onConfirm: () => _onConfirm(categories),
                 ),
@@ -635,12 +649,14 @@ class _LocationCard extends StatelessWidget {
 
 class _BottomBar extends StatelessWidget {
   final int estimated;
+  final bool invalid;
   final bool submitting;
   final VoidCallback onConfirm;
 
   const _BottomBar({
     required this.estimated,
     required this.onConfirm,
+    this.invalid = false,
     this.submitting = false,
   });
 
@@ -660,35 +676,42 @@ class _BottomBar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOutCubic,
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSizes.lg,
                 vertical: AppSizes.sm,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primarySubtle,
+                color: invalid
+                    ? const Color(0x1AEF4444)
+                    : AppColors.primarySubtle,
                 borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                border: invalid
+                    ? Border.all(color: AppColors.danger.withValues(alpha: 0.4))
+                    : null,
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.savings_outlined,
-                    color: AppColors.primary,
+                  Icon(
+                    invalid ? Icons.error_outline : Icons.savings_outlined,
+                    color: invalid ? AppColors.danger : AppColors.primary,
                     size: 18,
                   ),
                   const SizedBox(width: AppSizes.sm),
                   Text(
-                    'Estimasi Pendapatan',
+                    invalid ? 'Nominal Tidak Valid' : 'Estimasi Pendapatan',
                     style: TextStyle(
-                      color: AppColors.textS(context),
+                      color: invalid ? AppColors.danger : AppColors.textS(context),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const Spacer(),
                   Text(
-                    '+${Formatters.greenCoin(estimated)}',
-                    style: const TextStyle(
-                      color: AppColors.primary,
+                    invalid ? '—' : '+${Formatters.greenCoin(estimated)}',
+                    style: TextStyle(
+                      color: invalid ? AppColors.danger : AppColors.primary,
                       fontWeight: FontWeight.w800,
                       fontSize: 15,
                     ),
