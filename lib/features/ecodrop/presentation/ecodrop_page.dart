@@ -123,7 +123,7 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
   Widget build(BuildContext context) {
     final categories = ref.watch(wasteCategoriesProvider);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

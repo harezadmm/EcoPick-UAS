@@ -7,6 +7,7 @@ import '../../../core/constants/app_sizes.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_motion.dart';
+import '../../../shared/widgets/success_confetti_dialog.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../dashboard/providers/dashboard_provider.dart';
 import '../../greencoin/providers/greencoin_provider.dart';
@@ -22,7 +23,7 @@ class MarketplacePage extends ConsumerWidget {
     final products = ref.watch(marketplaceProductsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       appBar: AppBar(
         title: const Text('Marketplace'),
         centerTitle: false,
@@ -199,9 +200,6 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
           .read(marketplaceServiceProvider)
           .exchange(userId: user.id, product: p);
 
-      // Show snackbar BEFORE invalidate so the parent rebuild can't dispose us.
-      showMsg('Berhasil menukar ${p.name}');
-
       // Update local balance + invalidate dependent providers.
       ref.read(currentUserProvider.notifier).state =
           user.copyWith(greenCoinBalance: user.greenCoinBalance - p.priceGc);
@@ -209,6 +207,21 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
       ref.invalidate(dashboardProvider);
       ref.invalidate(greenCoinTransactionsProvider);
       ref.invalidate(greenCoinBalanceProvider);
+
+      // Reset busy state so dialog button is responsive
+      if (mounted) setState(() => _busy = false);
+
+      // Show confetti + congrats dialog
+      if (!mounted) return;
+      await SuccessConfettiDialog.show(
+        context,
+        title: 'Selamat! 🎉',
+        message:
+            'Anda berhasil menukar ${p.name} dengan ${Formatters.greenCoin(p.priceGc)}.',
+        emoji: p.displayEmoji,
+        primaryActionLabel: 'Lanjutkan',
+      );
+      return;
     } catch (e) {
       showMsg('Gagal menukar barang: $e');
     } finally {

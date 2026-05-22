@@ -23,10 +23,12 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = Container(
+    final content = AnimatedContainer(
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOutCubic,
       padding: padding ?? const EdgeInsets.all(AppSizes.lg),
       decoration: BoxDecoration(
-        color: color ?? AppColors.surface,
+        color: color ?? AppColors.surf(context),
         borderRadius: BorderRadius.circular(radius),
         border: border,
       ),

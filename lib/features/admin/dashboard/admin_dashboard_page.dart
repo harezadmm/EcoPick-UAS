@@ -93,7 +93,7 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       drawer: AdminDrawer(
         selectedSection: _section,
         onSectionSelected: _selectSection,

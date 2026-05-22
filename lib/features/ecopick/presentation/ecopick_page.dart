@@ -128,7 +128,7 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
   Widget build(BuildContext context) {
     final categoriesAsync = ref.watch(wasteCategoriesProvider);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

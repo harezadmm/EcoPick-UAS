@@ -30,7 +30,7 @@ class _GreenCoinPageState extends ConsumerState<GreenCoinPage> {
     final rupiah = Formatters.rupiahFromGc(balance);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

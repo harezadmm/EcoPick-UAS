@@ -20,10 +20,12 @@ class MainShell extends StatelessWidget {
           child: child,
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
-          border: Border(top: BorderSide(color: AppColors.divider)),
+      bottomNavigationBar: AnimatedContainer(
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOutCubic,
+        decoration: BoxDecoration(
+          color: AppColors.surf(context),
+          border: Border(top: BorderSide(color: AppColors.div(context))),
         ),
         child: SafeArea(
           top: false,

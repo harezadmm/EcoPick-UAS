@@ -10,6 +10,7 @@ import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_motion.dart';
 import '../../../shared/widgets/eco_logo.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../greencoin/models/greencoin_transaction.dart';
 import '../../greencoin/providers/greencoin_provider.dart';
@@ -25,7 +26,7 @@ class UserDashboardPage extends ConsumerWidget {
     final user = ref.watch(currentUserProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       body: SafeArea(
         child: Column(
           children: [
@@ -54,12 +55,15 @@ class UserDashboardPage extends ConsumerWidget {
   }
 }
 
-class _Header extends StatelessWidget {
+class _Header extends ConsumerWidget {
   final String name;
   const _Header({required this.name});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // ref.watch to trigger rebuild when toggled; brightness reads from theme
+    ref.watch(themeModeProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSizes.xl,
@@ -71,21 +75,26 @@ class _Header extends StatelessWidget {
         children: [
           const EcoLogo(size: 36),
           const SizedBox(width: AppSizes.sm),
-          const Text(
+          Text(
             'Beranda',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: AppColors.textP(context),
             ),
           ),
           const Spacer(),
+          _ThemeToggleButton(
+            isDark: isDark,
+            onTap: () => ref.read(themeModeProvider.notifier).toggle(),
+          ),
+          const SizedBox(width: AppSizes.sm),
           Text(
             name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
+              color: AppColors.textS(context),
             ),
           ),
           const SizedBox(width: AppSizes.sm),
@@ -94,7 +103,10 @@ class _Header extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primaryLight, width: 2),
+              border: Border.all(
+                color: AppColors.primaryTint(context),
+                width: 2,
+              ),
             ),
             child: const ClipOval(
               child: Icon(
@@ -105,6 +117,46 @@ class _Header extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ThemeToggleButton extends StatelessWidget {
+  final bool isDark;
+  final VoidCallback onTap;
+  const _ThemeToggleButton({required this.isDark, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+        width: 38,
+        height: 38,
+        decoration: BoxDecoration(
+          color: AppColors.primaryTint(context),
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 320),
+          transitionBuilder: (child, anim) => RotationTransition(
+            turns: Tween<double>(begin: 0.6, end: 1).animate(anim),
+            child: ScaleTransition(scale: anim, child: child),
+          ),
+          child: Icon(
+            isDark
+                ? Icons.light_mode_rounded
+                : Icons.dark_mode_rounded,
+            key: ValueKey(isDark),
+            color: AppColors.primary,
+            size: 20,
+          ),
+        ),
       ),
     );
   }

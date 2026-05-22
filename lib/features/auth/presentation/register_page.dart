@@ -69,7 +69,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   Widget build(BuildContext context) {
     final auth = ref.watch(authControllerProvider);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -98,9 +98,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
               Transform.translate(
                 offset: const Offset(0, -24),
                 child: Container(
-                  decoration: const BoxDecoration(
-                    color: AppColors.background,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: AppColors.bg(context),
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(AppSizes.radiusXl),
                     ),
                   ),
