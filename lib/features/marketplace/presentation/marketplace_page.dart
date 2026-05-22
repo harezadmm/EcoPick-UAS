@@ -187,6 +187,10 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
       return;
     }
 
+    final confirmed = await _showConfirmDialog(p);
+    if (confirmed != true) return;
+    if (!mounted) return;
+
     setState(() => _busy = true);
     try {
       final user = ref.read(currentUserProvider);
@@ -210,6 +214,163 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
     } finally {
       if (mounted) setState(() => _busy = false);
     }
+  }
+
+  Future<bool?> _showConfirmDialog(MarketplaceProduct p) {
+    final remaining = widget.currentBalance - p.priceGc;
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSizes.xl,
+            AppSizes.xl,
+            AppSizes.xl,
+            AppSizes.lg,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 64,
+                  height: 64,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primaryLight,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    p.displayEmoji,
+                    style: const TextStyle(fontSize: 32),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSizes.lg),
+              const Center(
+                child: Text(
+                  'Konfirmasi Penukaran',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSizes.xs),
+              Center(
+                child: Text(
+                  'Tukar GreenCoin dengan produk berikut?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSizes.lg),
+              Container(
+                padding: const EdgeInsets.all(AppSizes.md),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceMuted,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                ),
+                child: Column(
+                  children: [
+                    _kv('Produk', p.name),
+                    const SizedBox(height: 6),
+                    _kv('Harga', Formatters.greenCoin(p.priceGc),
+                        valueColor: AppColors.primary),
+                    const Divider(height: 20),
+                    _kv('Saldo saat ini',
+                        Formatters.greenCoin(widget.currentBalance)),
+                    const SizedBox(height: 6),
+                    _kv('Sisa saldo', Formatters.greenCoin(remaining),
+                        valueColor: AppColors.textPrimary, bold: true),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSizes.lg),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(ctx).pop(false),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(46),
+                        side: const BorderSide(color: AppColors.border),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(AppSizes.radiusPill),
+                        ),
+                      ),
+                      child: const Text(
+                        'Batal',
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSizes.md),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(ctx).pop(true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        minimumSize: const Size.fromHeight(46),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(AppSizes.radiusPill),
+                        ),
+                      ),
+                      child: const Text(
+                        'Tukar',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _kv(String key, String value,
+      {Color? valueColor, bool bold = false}) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            key,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 13,
+            ),
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            color: valueColor ?? AppColors.textPrimary,
+            fontSize: 13,
+            fontWeight: bold ? FontWeight.w800 : FontWeight.w700,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
