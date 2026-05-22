@@ -298,19 +298,29 @@ class _OverviewView extends StatelessWidget {
         MotionFadeSlide(
           delayMs: 20,
           child: _Panel(
+            padding: const EdgeInsets.fromLTRB(
+              AppSizes.lg,
+              AppSizes.md,
+              AppSizes.lg,
+              AppSizes.lg,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
                   'Platform Growth',
-                  style: _titleStyle,
+                  style: _sectionTitleStyle,
                 ),
-                const SizedBox(height: AppSizes.sm),
+                const SizedBox(height: 2),
                 const Text(
-                  'Platform activity across all segments',
-                  style: _subtitleStyle,
+                  'Activity across all segments',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-                const SizedBox(height: AppSizes.xxl),
+                const SizedBox(height: AppSizes.md),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -343,7 +353,7 @@ class _OverviewView extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: AppSizes.xl),
+        const SizedBox(height: AppSizes.md),
         MotionFadeSlide(
           delayMs: 90,
           child: _ActivityTrendCard(
@@ -351,7 +361,7 @@ class _OverviewView extends StatelessWidget {
             transactions: data.transactions,
           ),
         ),
-        const SizedBox(height: AppSizes.xl),
+        const SizedBox(height: AppSizes.md),
         MotionFadeSlide(
           delayMs: 160,
           child: _AnalyticsSplitCard(
@@ -359,36 +369,43 @@ class _OverviewView extends StatelessWidget {
             requests: logs,
           ),
         ),
-        const SizedBox(height: AppSizes.xl),
+        const SizedBox(height: AppSizes.md),
         MotionFadeSlide(
           delayMs: 230,
           child: _MarketplaceSnapshotCard(products: data.products),
         ),
-        const SizedBox(height: AppSizes.xl),
+        const SizedBox(height: AppSizes.md),
         MotionFadeSlide(
           delayMs: 300,
           child: _Panel(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Recent Platform Logs', style: _sectionTitleStyle),
-                const SizedBox(height: AppSizes.lg),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text('Recent Platform Logs',
+                          style: _sectionTitleStyle),
+                    ),
+                    TextButton(
+                      onPressed: onOpenUsers,
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: const Size(40, 24),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: const Text('Lihat semua'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSizes.sm),
                 if (logs.isEmpty)
                   const _EmptyLine('Belum ada aktivitas platform')
                 else
-                  for (final item in logs.take(5))
+                  for (final item in logs.take(3))
                     _PlatformLogTile(request: item),
               ],
             ),
-          ),
-        ),
-        const SizedBox(height: AppSizes.xl),
-        MotionFadeSlide(
-          delayMs: 360,
-          child: TextButton.icon(
-            onPressed: onOpenUsers,
-            icon: const Icon(Icons.group_outlined),
-            label: const Text('Lihat semua pengguna'),
           ),
         ),
       ],
@@ -462,12 +479,18 @@ class _ActivityTrendCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Activity Trend', style: _sectionTitleStyle),
-          const SizedBox(height: AppSizes.xs),
-          const Text('Total request dan transaksi 7 hari terakhir',
-              style: _subtitleStyle),
-          const SizedBox(height: AppSizes.lg),
+          const SizedBox(height: 2),
+          const Text(
+            'Request & transaksi 7 hari terakhir',
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: AppSizes.md),
           SizedBox(
-            height: 178,
+            height: 130,
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceBetween,
@@ -620,19 +643,23 @@ class _RequestMixChart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Segment Mix', style: _sectionTitleStyle),
-          const SizedBox(height: AppSizes.xs),
+          const SizedBox(height: 2),
           Text(
             total == 0
                 ? 'Belum ada aktivitas segmen'
                 : '$total aktivitas tercatat',
-            style: _subtitleStyle,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-          const SizedBox(height: AppSizes.lg),
+          const SizedBox(height: AppSizes.md),
           SizedBox(
-            height: 170,
+            height: 130,
             child: PieChart(
               PieChartData(
-                centerSpaceRadius: 42,
+                centerSpaceRadius: 32,
                 sectionsSpace: 3,
                 startDegreeOffset: -90,
                 sections: [
@@ -640,7 +667,7 @@ class _RequestMixChart extends StatelessWidget {
                     PieChartSectionData(
                       value: item.value.toDouble(),
                       title: total == 0 ? '' : '${item.value}',
-                      radius: 28,
+                      radius: 22,
                       color: item.color,
                       titleStyle: const TextStyle(
                         color: Colors.white,
@@ -688,15 +715,19 @@ class _StatusBreakdown extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Status Breakdown', style: _sectionTitleStyle),
-          const SizedBox(height: AppSizes.xs),
+          const SizedBox(height: 2),
           Text(
             total == 0 ? 'Belum ada status request' : '$total item dipantau',
-            style: _subtitleStyle,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-          const SizedBox(height: AppSizes.lg),
+          const SizedBox(height: AppSizes.md),
           for (final row in rows)
             Padding(
-              padding: const EdgeInsets.only(bottom: AppSizes.md),
+              padding: const EdgeInsets.only(bottom: AppSizes.sm),
               child: _ProgressRow(
                 label: statusLabel(row.status),
                 value: row.value,
@@ -729,10 +760,16 @@ class _MarketplaceSnapshotCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Marketplace Snapshot', style: _sectionTitleStyle),
-          const SizedBox(height: AppSizes.xs),
-          const Text('Kondisi stok dan nilai katalog produk',
-              style: _subtitleStyle),
-          const SizedBox(height: AppSizes.lg),
+          const SizedBox(height: 2),
+          const Text(
+            'Stok & nilai katalog produk',
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: AppSizes.md),
           Row(
             children: [
               Expanded(
@@ -946,7 +983,7 @@ class _PlatformLogTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: AppSizes.md),
+      padding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: AppColors.divider)),
       ),
@@ -2472,7 +2509,7 @@ const _titleStyle = TextStyle(
 
 const _sectionTitleStyle = TextStyle(
   color: AppColors.textPrimary,
-  fontSize: 18,
+  fontSize: 16,
   fontWeight: FontWeight.w800,
 );
 

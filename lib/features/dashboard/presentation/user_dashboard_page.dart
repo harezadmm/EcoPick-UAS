@@ -171,7 +171,6 @@ class _Body extends StatelessWidget {
               ),
               _MetricCard(
                 icon: Icons.co2_outlined,
-                assetPath: AppIcons.ecoBag,
                 iconBg: AppColors.primaryLight,
                 iconColor: AppColors.primaryDark,
                 label: 'CO2 DIHEMAT',
