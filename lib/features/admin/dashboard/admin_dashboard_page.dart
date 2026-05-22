@@ -286,11 +286,12 @@ class _OverviewView extends StatelessWidget {
     final logs = [...data.ecopicks, ...data.ecodrops]
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
+    final hPad = AppSizes.screenHorizontal(context);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSizes.xl,
+      padding: EdgeInsets.fromLTRB(
+        hPad,
         AppSizes.lg,
-        AppSizes.xl,
+        hPad,
         AppSizes.xl,
       ),
       children: [
@@ -311,6 +312,7 @@ class _OverviewView extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSizes.xxl),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: _MetricValue(
@@ -319,6 +321,7 @@ class _OverviewView extends StatelessWidget {
                         color: const Color(0xFF1D8CF8),
                       ),
                     ),
+                    const SizedBox(width: AppSizes.sm),
                     Expanded(
                       child: _MetricValue(
                         value: '${data.stats.totalTransactions}',
@@ -326,6 +329,7 @@ class _OverviewView extends StatelessWidget {
                         color: const Color(0xFFF59E0B),
                       ),
                     ),
+                    const SizedBox(width: AppSizes.sm),
                     Expanded(
                       child: _MetricValue(
                         value: '${_compactDouble(data.stats.recycledKg)} kg',
@@ -405,6 +409,7 @@ class _MetricValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final narrow = AppSizes.isNarrow(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -415,7 +420,7 @@ class _MetricValue extends StatelessWidget {
             value,
             style: TextStyle(
               color: color,
-              fontSize: 23,
+              fontSize: narrow ? 18 : 23,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -425,9 +430,9 @@ class _MetricValue extends StatelessWidget {
           label,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.textSecondary,
-            fontSize: 13,
+            fontSize: narrow ? 11 : 13,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -992,11 +997,12 @@ class _UsersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hPad = AppSizes.screenHorizontal(context);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSizes.xl,
+      padding: EdgeInsets.fromLTRB(
+        hPad,
         AppSizes.lg,
-        AppSizes.xl,
+        hPad,
         AppSizes.xl,
       ),
       children: [
@@ -1128,11 +1134,12 @@ class _WasteManagementView extends StatelessWidget {
       expandedUsers.add(groups.first.userId);
     }
 
+    final hPad = AppSizes.screenHorizontal(context);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSizes.xl,
+      padding: EdgeInsets.fromLTRB(
+        hPad,
         AppSizes.lg,
-        AppSizes.xl,
+        hPad,
         AppSizes.xl,
       ),
       children: [
@@ -1331,15 +1338,18 @@ class _WasteRequestCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSizes.md),
-          Row(
+          Wrap(
+            spacing: AppSizes.sm,
+            runSpacing: AppSizes.xs,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            alignment: WrapAlignment.spaceBetween,
             children: [
               _CategoryChip(label: request.categoryName),
-              const Spacer(),
               Text(
                 '${_compactDouble(request.weightKg)} kg',
                 style: const TextStyle(
                   color: AppColors.textSecondary,
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -1470,11 +1480,12 @@ class _TransactionsView extends StatelessWidget {
       expandedUsers.add(groups.first.userId);
     }
 
+    final hPad = AppSizes.screenHorizontal(context);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSizes.xl,
+      padding: EdgeInsets.fromLTRB(
+        hPad,
         AppSizes.lg,
-        AppSizes.xl,
+        hPad,
         AppSizes.xl,
       ),
       children: [
@@ -1558,13 +1569,14 @@ class _MarketplaceViewState extends State<_MarketplaceView> {
 
   @override
   Widget build(BuildContext context) {
+    final hPad = AppSizes.screenHorizontal(context);
     return Stack(
       children: [
         ListView(
-          padding: const EdgeInsets.fromLTRB(
-            AppSizes.xl,
+          padding: EdgeInsets.fromLTRB(
+            hPad,
             AppSizes.lg,
-            AppSizes.xl,
+            hPad,
             112,
           ),
           children: [
@@ -1627,23 +1639,25 @@ class _MarketplaceProductTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final narrow = AppSizes.isNarrow(context);
+    final avatarSize = narrow ? 44.0 : 54.0;
     return _Panel(
       child: Row(
         children: [
           Container(
-            width: 54,
-            height: 54,
+            width: avatarSize,
+            height: avatarSize,
             decoration: BoxDecoration(
               color: AppColors.primarySubtle,
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.shopping_bag_outlined,
               color: AppColors.primary,
-              size: 28,
+              size: narrow ? 22 : 28,
             ),
           ),
-          const SizedBox(width: AppSizes.lg),
+          SizedBox(width: narrow ? AppSizes.md : AppSizes.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1652,9 +1666,9 @@ class _MarketplaceProductTile extends StatelessWidget {
                   product.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 17,
+                    fontSize: narrow ? 15 : 17,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -1664,27 +1678,61 @@ class _MarketplaceProductTile extends StatelessWidget {
                   '${product.isActive ? '' : ' • nonaktif'}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textSecondary,
-                    fontSize: 14,
+                    fontSize: narrow ? 12 : 14,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
             ),
           ),
-          IconButton(
-            onPressed: onEdit,
-            icon: const Icon(Icons.edit_rounded),
-            color: AppColors.textPrimary,
-            tooltip: 'Edit produk',
-          ),
-          IconButton(
-            onPressed: onDelete,
-            icon: const Icon(Icons.delete_outline_rounded),
-            color: AppColors.danger,
-            tooltip: 'Hapus produk',
-          ),
+          if (narrow)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert_rounded),
+              onSelected: (value) {
+                if (value == 'edit') onEdit();
+                if (value == 'delete') onDelete();
+              },
+              itemBuilder: (_) => [
+                const PopupMenuItem(
+                  value: 'edit',
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit_rounded, size: 18),
+                      SizedBox(width: AppSizes.sm),
+                      Text('Edit produk'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete_outline_rounded,
+                          color: AppColors.danger, size: 18),
+                      SizedBox(width: AppSizes.sm),
+                      Text('Hapus produk',
+                          style: TextStyle(color: AppColors.danger)),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          else ...[
+            IconButton(
+              onPressed: onEdit,
+              icon: const Icon(Icons.edit_rounded),
+              color: AppColors.textPrimary,
+              tooltip: 'Edit produk',
+            ),
+            IconButton(
+              onPressed: onDelete,
+              icon: const Icon(Icons.delete_outline_rounded),
+              color: AppColors.danger,
+              tooltip: 'Hapus produk',
+            ),
+          ],
         ],
       ),
     );
@@ -1775,12 +1823,13 @@ class _MarketplaceProductFormState extends State<_MarketplaceProductForm> {
 
   @override
   Widget build(BuildContext context) {
+    final hPad = AppSizes.screenHorizontal(context);
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.xl),
+        padding: EdgeInsets.fromLTRB(hPad, AppSizes.xl, hPad, AppSizes.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -1886,11 +1935,12 @@ class _SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hPad = AppSizes.screenHorizontal(context);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSizes.xl,
+      padding: EdgeInsets.fromLTRB(
+        hPad,
         AppSizes.lg,
-        AppSizes.xl,
+        hPad,
         AppSizes.xl,
       ),
       children: [
@@ -2133,14 +2183,30 @@ class _PageHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final narrow = AppSizes.isNarrow(context);
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSizes.xl),
+      padding: EdgeInsets.only(bottom: narrow ? AppSizes.lg : AppSizes.xl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: _titleStyle),
-          const SizedBox(height: AppSizes.sm),
-          Text(subtitle, style: _subtitleStyle),
+          Text(
+            title,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: narrow ? 18 : 22,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: AppSizes.xs),
+          Text(
+            subtitle,
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: narrow ? 13 : 15,
+              height: 1.4,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );
@@ -2185,20 +2251,21 @@ class _SearchBox extends StatelessWidget {
 
 class _Panel extends StatelessWidget {
   final Widget child;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   const _Panel({
     required this.child,
-    this.padding = const EdgeInsets.all(AppSizes.lg),
+    this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
+    final inner = padding ?? EdgeInsets.all(AppSizes.panelPadding(context));
     return AnimatedContainer(
       duration: AppMotion.medium,
       curve: AppMotion.curve,
       width: double.infinity,
-      padding: padding,
+      padding: inner,
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSizes.radiusLg),
