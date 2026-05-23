@@ -400,7 +400,7 @@ class _ProductCardState extends ConsumerState<_ProductCard> {
             ),
             child: Container(
               height: 100,
-              color: AppColors.primarySubtle,
+              color: AppColors.primarySubtleColor(context),
               alignment: Alignment.center,
               padding: const EdgeInsets.all(AppSizes.sm),
               child: _ProductMedia(product: p),

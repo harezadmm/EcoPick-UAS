@@ -432,7 +432,7 @@ class DottedDashedContainer extends StatelessWidget {
       painter: _DashedBorderPainter(),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.primarySubtle,
+          color: AppColors.primarySubtleColor(context),
           borderRadius: BorderRadius.circular(AppSizes.radiusLg),
         ),
         child: child,

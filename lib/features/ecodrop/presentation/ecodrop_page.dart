@@ -465,7 +465,7 @@ class _BankSampahCard extends StatelessWidget {
                 Container(
                   height: 140,
                   width: double.infinity,
-                  color: const Color(0xFFCBE9D6),
+                  color: AppColors.primaryTint(context),
                   child: const Center(
                     child: Icon(
                       Icons.map_outlined,

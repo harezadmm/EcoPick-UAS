@@ -412,7 +412,7 @@ class _ProductsTabState extends ConsumerState<_ProductsTab> {
                           width: 48,
                           height: 48,
                           decoration: BoxDecoration(
-                            color: AppColors.primarySubtle,
+                            color: AppColors.primarySubtleColor(context),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(

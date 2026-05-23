@@ -1717,7 +1717,7 @@ class _MarketplaceProductTile extends StatelessWidget {
             width: avatarSize,
             height: avatarSize,
             decoration: BoxDecoration(
-              color: AppColors.primarySubtle,
+              color: AppColors.primarySubtleColor(context),
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
             ),
             child: Icon(

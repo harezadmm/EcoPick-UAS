@@ -97,7 +97,7 @@ class EcoDropSuccessPage extends StatelessWidget {
                       vertical: AppSizes.md,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primarySubtle,
+                      color: AppColors.primarySubtleColor(context),
                       borderRadius: BorderRadius.circular(AppSizes.radiusPill),
                     ),
                     child: Row(
@@ -150,7 +150,7 @@ class EcoDropSuccessPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppSizes.lg),
               decoration: BoxDecoration(
-                color: AppColors.primarySubtle,
+                color: AppColors.primarySubtleColor(context),
                 borderRadius: BorderRadius.circular(AppSizes.radiusLg),
               ),
               child: Column(
@@ -175,7 +175,7 @@ class EcoDropSuccessPage extends StatelessWidget {
                                 height: 20,
                                 margin: const EdgeInsets.only(top: 1),
                                 alignment: Alignment.center,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   color: AppColors.primary,
                                   shape: BoxShape.circle,
                                 ),

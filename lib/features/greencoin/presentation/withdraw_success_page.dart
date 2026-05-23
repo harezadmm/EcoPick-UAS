@@ -77,7 +77,7 @@ class WithdrawSuccessPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppSizes.lg),
               decoration: BoxDecoration(
-                color: AppColors.primarySubtle,
+                color: AppColors.primarySubtleColor(context),
                 borderRadius: BorderRadius.circular(AppSizes.radiusLg),
               ),
               child: Column(
