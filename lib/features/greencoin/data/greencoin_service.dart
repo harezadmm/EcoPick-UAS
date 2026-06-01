@@ -1,5 +1,6 @@
 import '../../../core/config/supabase_config.dart';
 import '../models/greencoin_transaction.dart';
+import '../models/withdraw_request.dart';
 
 class GreenCoinService {
   Future<List<GreenCoinTransaction>> fetchTransactions(String userId) async {
@@ -21,5 +22,25 @@ class GreenCoinService {
         .eq('id', userId)
         .maybeSingle();
     return (row?['green_coin_balance'] as int?) ?? 0;
+  }
+
+  Future<String> createWithdraw(String userId, WithdrawRequest request) async {
+    if (!SupabaseConfig.isConfigured) throw Exception('Supabase not configured');
+
+    final result = await SupabaseConfig.client
+        .from('greencoin_transactions')
+        .insert({
+          'user_id': userId,
+          'amount_gc': -request.amountGc,
+          'amount_rupiah': -request.amountRupiah,
+          'source_type': 'withdraw',
+          'status': 'process',
+          'description': 'Withdraw ke ${request.walletType} ${request.maskedAccount}',
+          'is_inflow': false,
+        })
+        .select('id')
+        .single();
+
+    return result['id'] as String;
   }
 }

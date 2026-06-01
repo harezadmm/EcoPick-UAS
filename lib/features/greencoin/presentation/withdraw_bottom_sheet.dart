@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -7,9 +8,11 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/labeled_field.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../auth/providers/auth_provider.dart';
+import '../data/greencoin_service.dart';
 import '../models/withdraw_request.dart';
 
-class WithdrawBottomSheet extends StatefulWidget {
+class WithdrawBottomSheet extends ConsumerStatefulWidget {
   final int balanceGc;
   const WithdrawBottomSheet({super.key, required this.balanceGc});
 
@@ -27,10 +30,10 @@ class WithdrawBottomSheet extends StatefulWidget {
   }
 
   @override
-  State<WithdrawBottomSheet> createState() => _WithdrawBottomSheetState();
+  ConsumerState<WithdrawBottomSheet> createState() => _WithdrawBottomSheetState();
 }
 
-class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
+class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
   int _selectedWallet = 0;
   int _selectedPreset = 2;
   bool _confirmed = false;
@@ -66,7 +69,7 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
     super.dispose();
   }
 
-  void _confirm() {
+  Future<void> _confirm() async {
     if (!_confirmed) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Mohon centang konfirmasi data')),
@@ -79,6 +82,7 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
       );
       return;
     }
+
     final remainingBalance = widget.balanceGc - _amount;
     final request = WithdrawRequest(
       walletType: _wallets[_selectedWallet].name,
@@ -88,8 +92,22 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
       amountRupiah: _rupiah,
       remainingBalanceGc: remainingBalance,
     );
-    Navigator.of(context).pop();
-    context.push('/withdraw/success', extra: request);
+
+    try {
+      final user = ref.read(currentUserProvider);
+      if (user == null) throw Exception('User tidak ditemukan');
+
+      await GreenCoinService().createWithdraw(user.id, request);
+
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      context.push('/withdraw/success', extra: request);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
   }
 
   @override
