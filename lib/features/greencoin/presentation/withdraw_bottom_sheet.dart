@@ -117,6 +117,7 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
       await GreenCoinService().createWithdraw(user.id, request);
 
       // Invalidate providers to refresh data
+      ref.invalidate(currentUserProvider);
       ref.invalidate(dashboardProvider);
       ref.invalidate(greenCoinBalanceProvider);
       ref.invalidate(greenCoinTransactionsProvider);
