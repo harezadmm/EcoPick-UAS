@@ -82,6 +82,12 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
       );
       return;
     }
+    if (_amount > widget.balanceGc) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Saldo tidak cukup. Saldo Anda ${Formatters.greenCoin(widget.balanceGc)}')),
+      );
+      return;
+    }
 
     final remainingBalance = widget.balanceGc - _amount;
     final request = WithdrawRequest(
