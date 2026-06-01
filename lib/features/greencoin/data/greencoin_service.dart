@@ -27,6 +27,7 @@ class GreenCoinService {
   Future<String> createWithdraw(String userId, WithdrawRequest request) async {
     if (!SupabaseConfig.isConfigured) throw Exception('Supabase not configured');
 
+    // Create transaction record
     final result = await SupabaseConfig.client
         .from('greencoin_transactions')
         .insert({
@@ -40,6 +41,12 @@ class GreenCoinService {
         })
         .select('id')
         .single();
+
+    // Update user balance
+    await SupabaseConfig.client
+        .from('profiles')
+        .update({'green_coin_balance': request.remainingBalanceGc})
+        .eq('id', userId);
 
     return result['id'] as String;
   }
