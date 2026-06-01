@@ -216,7 +216,7 @@ class _Body extends ConsumerWidget {
                 iconBg: AppColors.primaryLight,
                 iconColor: AppColors.primaryDark,
                 label: 'SALDO GREENCOIN',
-                value: Formatters.greenCoin(data.greenCoinBalance),
+                value: Formatters.greenCoinCompact(data.greenCoinBalance),
               ),
               _MetricCard(
                 icon: Icons.delete_outline_rounded,

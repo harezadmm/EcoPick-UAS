@@ -16,6 +16,16 @@ class Formatters {
 
   static String greenCoin(num value) => '${_number.format(value)} GC';
 
+  static String greenCoinCompact(num value) {
+    if (value >= 1000000) {
+      return '${(value / 1000000).toStringAsFixed(1)}M GC';
+    } else if (value >= 1000) {
+      return '${(value / 1000).toStringAsFixed(1)}K GC';
+    } else {
+      return '${value.toInt()} GC';
+    }
+  }
+
   static String weight(num value) {
     if (value == value.truncate()) return '${value.toInt()} kg';
     return '${value.toStringAsFixed(1)} kg';
