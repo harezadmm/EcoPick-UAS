@@ -34,8 +34,11 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
   int _selectedWallet = 0;
   int _selectedPreset = 2;
   bool _confirmed = false;
+  bool _isCustomAmount = false;
+  int _customAmount = 0;
   final _accountCtrl = TextEditingController(text: '0812 3456 7890');
   final _nameCtrl = TextEditingController(text: 'Alexa M.');
+  final _customAmountCtrl = TextEditingController();
 
   final _wallets = const [
     _Wallet('DANA', Color(0xFF118EEA), Icons.account_balance_wallet_rounded),
@@ -46,9 +49,12 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
 
   final _presets = const [500, 1000, 2000, -1];
 
-  int get _amount => _presets[_selectedPreset] == -1
-      ? widget.balanceGc
-      : _presets[_selectedPreset];
+  int get _amount {
+    if (_isCustomAmount && _customAmount > 0) return _customAmount;
+    return _presets[_selectedPreset] == -1
+        ? widget.balanceGc
+        : _presets[_selectedPreset];
+  }
 
   int get _rupiah => Formatters.rupiahFromGc(_amount);
 
@@ -56,6 +62,7 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
   void dispose() {
     _accountCtrl.dispose();
     _nameCtrl.dispose();
+    _customAmountCtrl.dispose();
     super.dispose();
   }
 
@@ -323,45 +330,104 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
                     const SizedBox(height: AppSizes.sm),
                     Wrap(
                       spacing: AppSizes.sm,
-                      children: List.generate(_presets.length, (i) {
-                        final selected = i == _selectedPreset;
-                        final label = _presets[i] == -1
-                            ? 'Semua'
-                            : Formatters.compactNumber(_presets[i]);
-                        return GestureDetector(
-                          onTap: () =>
-                              setState(() => _selectedPreset = i),
+                      children: [
+                        ...List.generate(_presets.length, (i) {
+                          final selected = !_isCustomAmount && i == _selectedPreset;
+                          final label = _presets[i] == -1
+                              ? 'Semua'
+                              : Formatters.compactNumber(_presets[i]);
+                          return GestureDetector(
+                            onTap: () => setState(() {
+                              _selectedPreset = i;
+                              _isCustomAmount = false;
+                              _customAmountCtrl.clear();
+                            }),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSizes.lg,
+                                vertical: AppSizes.sm,
+                              ),
+                              decoration: BoxDecoration(
+                                color: selected
+                                    ? AppColors.primary
+                                    : AppColors.surface,
+                                borderRadius: BorderRadius.circular(
+                                  AppSizes.radiusPill,
+                                ),
+                                border: Border.all(
+                                  color: selected
+                                      ? AppColors.primary
+                                      : AppColors.brd(context),
+                                ),
+                              ),
+                              child: Text(
+                                label,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: selected
+                                      ? Colors.white
+                                      : AppColors.textS(context),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                        GestureDetector(
+                          onTap: () => setState(() => _isCustomAmount = true),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSizes.lg,
                               vertical: AppSizes.sm,
                             ),
                             decoration: BoxDecoration(
-                              color: selected
+                              color: _isCustomAmount
                                   ? AppColors.primary
                                   : AppColors.surface,
                               borderRadius: BorderRadius.circular(
                                 AppSizes.radiusPill,
                               ),
                               border: Border.all(
-                                color: selected
+                                color: _isCustomAmount
                                     ? AppColors.primary
                                     : AppColors.brd(context),
                               ),
                             ),
                             child: Text(
-                              label,
+                              'Custom',
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
-                                color: selected
+                                color: _isCustomAmount
                                     ? Colors.white
                                     : AppColors.textS(context),
                               ),
                             ),
                           ),
-                        );
-                      }),
+                        ),
+                      ],
                     ),
+                    if (_isCustomAmount) ...[
+                      const SizedBox(height: AppSizes.sm),
+                      TextField(
+                        controller: _customAmountCtrl,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: 'Masukkan nominal dalam GC',
+                          prefixText: 'GC ',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: AppSizes.lg,
+                            vertical: AppSizes.md,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _customAmount = int.tryParse(value) ?? 0;
+                          });
+                        },
+                      ),
+                    ],
                     const SizedBox(height: AppSizes.lg),
                     Container(
                       padding: const EdgeInsets.all(AppSizes.lg),
