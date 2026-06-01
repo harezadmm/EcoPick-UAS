@@ -84,14 +84,26 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
       );
       return;
     }
-    if (_amount > widget.balanceGc) {
+
+    // Re-fetch balance from server to ensure we have latest data
+    final user = ref.read(currentUserProvider);
+    if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Saldo tidak cukup. Saldo Anda ${Formatters.greenCoin(widget.balanceGc)}')),
+        const SnackBar(content: Text('User tidak ditemukan')),
       );
       return;
     }
 
-    final remainingBalance = widget.balanceGc - _amount;
+    final latestBalance = await GreenCoinService().fetchBalance(user.id);
+
+    if (_amount > latestBalance) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Saldo tidak cukup. Saldo Anda ${Formatters.greenCoin(latestBalance)}')),
+      );
+      return;
+    }
+
+    final remainingBalance = latestBalance - _amount;
     final request = WithdrawRequest(
       walletType: _wallets[_selectedWallet].name,
       accountNumber: _accountCtrl.text,
@@ -102,9 +114,6 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
     );
 
     try {
-      final user = ref.read(currentUserProvider);
-      if (user == null) throw Exception('User tidak ditemukan');
-
       await GreenCoinService().createWithdraw(user.id, request);
 
       // Invalidate providers to refresh data
