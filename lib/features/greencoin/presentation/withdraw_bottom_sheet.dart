@@ -9,8 +9,10 @@ import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/labeled_field.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../dashboard/providers/dashboard_provider.dart';
 import '../data/greencoin_service.dart';
 import '../models/withdraw_request.dart';
+import '../providers/greencoin_provider.dart';
 
 class WithdrawBottomSheet extends ConsumerStatefulWidget {
   final int balanceGc;
@@ -104,6 +106,11 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
       if (user == null) throw Exception('User tidak ditemukan');
 
       await GreenCoinService().createWithdraw(user.id, request);
+
+      // Invalidate providers to refresh data
+      ref.invalidate(dashboardProvider);
+      ref.invalidate(greenCoinBalanceProvider);
+      ref.invalidate(greenCoinTransactionsProvider);
 
       if (!mounted) return;
       Navigator.of(context).pop();
