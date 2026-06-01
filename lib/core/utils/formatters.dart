@@ -18,7 +18,7 @@ class Formatters {
 
   static String greenCoinCompact(num value) {
     if (value >= 1000000) {
-      return '${(value / 1000000).toStringAsFixed(1)}M GC';
+      return '${(value / 1000000).toStringAsFixed(2)}M GC';
     } else if (value >= 1000) {
       return '${(value / 1000).toStringAsFixed(1)}K GC';
     } else {

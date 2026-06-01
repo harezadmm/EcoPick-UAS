@@ -112,6 +112,9 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
       ref.invalidate(greenCoinBalanceProvider);
       ref.invalidate(greenCoinTransactionsProvider);
 
+      // Give providers a moment to refresh
+      await Future.delayed(const Duration(milliseconds: 100));
+
       if (!mounted) return;
       Navigator.of(context).pop();
       context.push('/withdraw/success', extra: request);
