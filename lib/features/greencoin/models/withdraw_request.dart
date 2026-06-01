@@ -4,6 +4,7 @@ class WithdrawRequest {
   final String accountName;
   final int amountGc;
   final int amountRupiah;
+  final int remainingBalanceGc;
 
   WithdrawRequest({
     required this.walletType,
@@ -11,6 +12,7 @@ class WithdrawRequest {
     required this.accountName,
     required this.amountGc,
     required this.amountRupiah,
+    required this.remainingBalanceGc,
   });
 
   String get maskedAccount {

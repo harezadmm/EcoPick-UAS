@@ -79,12 +79,14 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
       );
       return;
     }
+    final remainingBalance = widget.balanceGc - _amount;
     final request = WithdrawRequest(
       walletType: _wallets[_selectedWallet].name,
       accountNumber: _accountCtrl.text,
       accountName: _nameCtrl.text,
       amountGc: _amount,
       amountRupiah: _rupiah,
+      remainingBalanceGc: remainingBalance,
     );
     Navigator.of(context).pop();
     context.push('/withdraw/success', extra: request);

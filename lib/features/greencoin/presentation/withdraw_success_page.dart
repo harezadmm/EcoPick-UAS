@@ -72,7 +72,7 @@ class WithdrawSuccessPage extends StatelessWidget {
                   const Divider(height: 32),
                   _row(context,
                     'Sisa saldo',
-                    request != null ? Formatters.greenCoin(request!.amountGc) : '3,240 GC',
+                    request != null ? Formatters.greenCoin(request!.remainingBalanceGc) : '3,240 GC',
                   ),
                   _row(context, 
                     'Nomor referensi',
