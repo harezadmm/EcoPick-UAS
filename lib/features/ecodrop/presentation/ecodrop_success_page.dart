@@ -9,9 +9,12 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../../shared/widgets/status_badge.dart';
 import '../../../shared/widgets/success_header.dart';
+import '../../../core/utils/formatters.dart';
+import '../models/ecodrop_result.dart';
 
 class EcoDropSuccessPage extends StatelessWidget {
-  const EcoDropSuccessPage({super.key});
+  final EcoDropResult? result;
+  const EcoDropSuccessPage({super.key, this.result});
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +59,8 @@ class EcoDropSuccessPage extends StatelessWidget {
                   _kv(context, 'Tanggal setor', 'Rabu, 12 Juni 2026'),
                   _kv(context, 'Waktu kirim', '10:24'),
                   const Divider(height: 32),
-                  _kv(context, 'Kategori sampah', 'Botol plastik'),
-                  _kv(context, 'Berat', '3.5 kg'),
+                  _kv(context, 'Kategori sampah', result?.categoryName ?? 'Botol plastik'),
+                  _kv(context, 'Berat', result != null ? Formatters.weight(result!.weightKg) : '3.5 kg'),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: AppSizes.sm,
@@ -111,7 +114,7 @@ class EcoDropSuccessPage extends StatelessWidget {
                         ),
                         Spacer(),
                         Text(
-                          '+95 GC',
+                          result != null ? '+${Formatters.greenCoin(result!.estimatedGc)}' : '+95 GC',
                           style: TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w800,

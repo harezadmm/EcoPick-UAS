@@ -9,9 +9,12 @@ import '../../../shared/widgets/primary_button.dart';
 import '../../../shared/widgets/status_badge.dart';
 import '../../../shared/widgets/success_header.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/utils/formatters.dart';
+import '../models/ecopick_result.dart';
 
 class EcoPickSuccessPage extends StatelessWidget {
-  const EcoPickSuccessPage({super.key});
+  final EcoPickResult? result;
+  const EcoPickSuccessPage({super.key, this.result});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +62,7 @@ class EcoPickSuccessPage extends StatelessWidget {
                   ),
                   _RowItem(
                     label: 'Lokasi',
-                    value: 'Jl. Pemuda No. 12, Surabaya',
+                    value: result?.pickupAddress ?? 'Jl. Pemuda No. 12, Surabaya',
                     icon: Icons.location_on_outlined,
                   ),
                   Divider(height: 32),
@@ -80,7 +83,7 @@ class EcoPickSuccessPage extends StatelessWidget {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              'Plastik & Kertas',
+                              result?.categoryName ?? 'Plastik & Kertas',
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.textP(context),
@@ -104,7 +107,7 @@ class EcoPickSuccessPage extends StatelessWidget {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              '5.2 kg',
+                              result != null ? Formatters.weight(result!.weightKg) : '5.2 kg',
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.textP(context),
@@ -139,7 +142,7 @@ class EcoPickSuccessPage extends StatelessWidget {
                         ),
                         Spacer(),
                         Text(
-                          '+150 GC',
+                          result != null ? '+${Formatters.greenCoin(result!.estimatedGc)}' : '+150 GC',
                           style: TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w800,

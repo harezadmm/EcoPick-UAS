@@ -13,6 +13,7 @@ import '../../auth/providers/auth_provider.dart';
 import '../../dashboard/providers/dashboard_provider.dart';
 import '../../greencoin/providers/greencoin_provider.dart';
 import '../data/ecopick_service.dart';
+import '../models/ecopick_result.dart';
 import '../models/waste_category.dart';
 import '../providers/ecopick_provider.dart';
 
@@ -101,6 +102,7 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
     }
 
     setState(() => _submitting = true);
+    const pickupAddress = 'Jl. Hijau No. 12, Jakarta Selatan';
     try {
       final user = ref.read(currentUserProvider);
       if (user != null) {
@@ -109,7 +111,7 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
           categoryId: _selectedCategory!.id,
           weightKg: weight,
           estimatedGc: _estimatedGc,
-          pickupAddress: 'Jl. Hijau No. 12, Jakarta Selatan',
+          pickupAddress: pickupAddress,
           notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
         );
         ref.invalidate(dashboardProvider);
@@ -117,7 +119,12 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
         ref.invalidate(greenCoinBalanceProvider);
       }
       if (!mounted) return;
-      context.push('/ecopick/success');
+      context.push('/ecopick/success', extra: EcoPickResult(
+        categoryName: _selectedCategory!.name,
+        weightKg: weight,
+        estimatedGc: _estimatedGc,
+        pickupAddress: pickupAddress,
+      ));
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

@@ -6,8 +6,10 @@ import '../../features/auth/presentation/landing_page.dart';
 import '../../features/auth/presentation/login_page.dart';
 import '../../features/auth/presentation/register_page.dart';
 import '../../features/dashboard/presentation/user_dashboard_page.dart';
+import '../../features/ecodrop/models/ecodrop_result.dart';
 import '../../features/ecodrop/presentation/ecodrop_page.dart';
 import '../../features/ecodrop/presentation/ecodrop_success_page.dart';
+import '../../features/ecopick/models/ecopick_result.dart';
 import '../../features/ecopick/presentation/ecopick_page.dart';
 import '../../features/ecopick/presentation/ecopick_success_page.dart';
 import '../../features/greencoin/models/withdraw_request.dart';
@@ -77,12 +79,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/ecopick/success',
         name: 'ecopick-success',
-        builder: (context, state) => const EcoPickSuccessPage(),
+        builder: (context, state) => EcoPickSuccessPage(
+          result: state.extra as EcoPickResult?,
+        ),
       ),
       GoRoute(
         path: '/ecodrop/success',
         name: 'ecodrop-success',
-        builder: (context, state) => const EcoDropSuccessPage(),
+        builder: (context, state) => EcoDropSuccessPage(
+          result: state.extra as EcoDropResult?,
+        ),
       ),
       GoRoute(
         path: '/withdraw/success',

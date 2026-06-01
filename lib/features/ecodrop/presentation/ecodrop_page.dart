@@ -16,6 +16,7 @@ import '../../ecopick/models/waste_category.dart';
 import '../../ecopick/presentation/ecopick_page.dart';
 import '../../ecopick/providers/ecopick_provider.dart';
 import '../data/ecodrop_service.dart';
+import '../models/ecodrop_result.dart';
 
 class EcoDropPage extends ConsumerStatefulWidget {
   const EcoDropPage({super.key});
@@ -112,7 +113,11 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
         ref.invalidate(greenCoinBalanceProvider);
       }
       if (!mounted) return;
-      context.push('/ecodrop/success');
+      context.push('/ecodrop/success', extra: EcoDropResult(
+        categoryName: _selectedCategory!.name,
+        weightKg: weight,
+        estimatedGc: _estimatedGc,
+      ));
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
