@@ -30,13 +30,14 @@ class GreenCoinService {
     // Atomic withdrawal via RPC: creates the request, records the transaction,
     // and deducts the balance in one transaction (bypasses admin-only RLS on
     // greencoin_transactions via SECURITY DEFINER while verifying ownership).
+    // The rupiah payout is computed server-side from a trusted rate, never
+    // sent by the client, so it can't be tampered with.
     final id = await SupabaseConfig.client.rpc(
       'withdraw_greencoin',
       params: {
         'p_wallet_provider': request.walletType,
         'p_account_number': request.accountNumber,
         'p_amount_gc': request.amountGc,
-        'p_amount_rupiah': request.amountRupiah,
       },
     );
 
