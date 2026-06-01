@@ -7,6 +7,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/labeled_field.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../models/withdraw_request.dart';
 
 class WithdrawBottomSheet extends StatefulWidget {
   final int balanceGc;
@@ -71,8 +72,15 @@ class _WithdrawBottomSheetState extends State<WithdrawBottomSheet> {
       );
       return;
     }
+    final request = WithdrawRequest(
+      walletType: _wallets[_selectedWallet].name,
+      accountNumber: _accountCtrl.text,
+      accountName: _nameCtrl.text,
+      amountGc: _amount,
+      amountRupiah: _rupiah,
+    );
     Navigator.of(context).pop();
-    context.push('/withdraw/success');
+    context.push('/withdraw/success', extra: request);
   }
 
   @override

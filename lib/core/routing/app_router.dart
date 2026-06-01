@@ -10,6 +10,7 @@ import '../../features/ecodrop/presentation/ecodrop_page.dart';
 import '../../features/ecodrop/presentation/ecodrop_success_page.dart';
 import '../../features/ecopick/presentation/ecopick_page.dart';
 import '../../features/ecopick/presentation/ecopick_success_page.dart';
+import '../../features/greencoin/models/withdraw_request.dart';
 import '../../features/greencoin/presentation/greencoin_page.dart';
 import '../../features/greencoin/presentation/withdraw_success_page.dart';
 import '../../features/marketplace/presentation/marketplace_page.dart';
@@ -86,7 +87,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/withdraw/success',
         name: 'withdraw-success',
-        builder: (context, state) => const WithdrawSuccessPage(),
+        builder: (context, state) => WithdrawSuccessPage(
+          request: state.extra as WithdrawRequest?,
+        ),
       ),
       GoRoute(
         path: '/status',
