@@ -117,11 +117,6 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
         ref.invalidate(greenCoinBalanceProvider);
       }
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('EcoPick terkirim. Menunggu persetujuan admin.'),
-        ),
-      );
       context.push('/ecopick/success');
     } catch (e) {
       if (!mounted) return;

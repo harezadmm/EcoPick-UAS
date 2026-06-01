@@ -112,11 +112,6 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
         ref.invalidate(greenCoinBalanceProvider);
       }
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('EcoDrop terkirim. Menunggu persetujuan admin.'),
-        ),
-      );
       context.push('/ecodrop/success');
     } catch (e) {
       if (!mounted) return;
