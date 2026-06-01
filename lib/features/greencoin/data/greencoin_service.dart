@@ -37,7 +37,6 @@ class GreenCoinService {
           'source_type': 'withdraw',
           'status': 'process',
           'description': 'Withdraw ke ${request.walletType} ${request.maskedAccount}',
-          'is_inflow': false,
         })
         .select('id')
         .single();
