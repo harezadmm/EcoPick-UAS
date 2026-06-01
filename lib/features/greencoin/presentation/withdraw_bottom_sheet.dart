@@ -84,6 +84,18 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
       );
       return;
     }
+    // amount_rupiah is stored as int4 (max ~2.1B); cap a single withdrawal
+    // at Rp 2.000.000.000 to stay within range.
+    const maxWithdrawRupiah = 2000000000;
+    if (_rupiah > maxWithdrawRupiah) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(
+          'Maksimal penarikan Rp 2.000.000.000 per transaksi '
+          '(${Formatters.greenCoin(maxWithdrawRupiah ~/ AppStrings.gcToRupiahRate.toInt())})',
+        )),
+      );
+      return;
+    }
 
     // Re-fetch balance from server to ensure we have latest data
     final user = ref.read(currentUserProvider);

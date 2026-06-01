@@ -27,26 +27,19 @@ class GreenCoinService {
   Future<String> createWithdraw(String userId, WithdrawRequest request) async {
     if (!SupabaseConfig.isConfigured) throw Exception('Supabase not configured');
 
-    // Create transaction record
-    final result = await SupabaseConfig.client
-        .from('greencoin_transactions')
-        .insert({
-          'user_id': userId,
-          'amount_gc': -request.amountGc,
-          'amount_rupiah': -request.amountRupiah,
-          'source_type': 'withdraw',
-          'status': 'process',
-          'description': 'Withdraw ke ${request.walletType} ${request.maskedAccount}',
-        })
-        .select('id')
-        .single();
+    // Atomic withdrawal via RPC: creates the request, records the transaction,
+    // and deducts the balance in one transaction (bypasses admin-only RLS on
+    // greencoin_transactions via SECURITY DEFINER while verifying ownership).
+    final id = await SupabaseConfig.client.rpc(
+      'withdraw_greencoin',
+      params: {
+        'p_wallet_provider': request.walletType,
+        'p_account_number': request.accountNumber,
+        'p_amount_gc': request.amountGc,
+        'p_amount_rupiah': request.amountRupiah,
+      },
+    );
 
-    // Update user balance
-    await SupabaseConfig.client
-        .from('profiles')
-        .update({'green_coin_balance': request.remainingBalanceGc})
-        .eq('id', userId);
-
-    return result['id'] as String;
+    return id as String;
   }
 }
