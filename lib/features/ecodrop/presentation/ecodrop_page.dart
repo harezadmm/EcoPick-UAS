@@ -13,6 +13,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_motion.dart';
 import '../../../shared/widgets/labeled_field.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/image_source_sheet.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../dashboard/providers/dashboard_provider.dart';
 import '../../greencoin/providers/greencoin_provider.dart';
@@ -36,10 +37,9 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
   bool _submitting = false;
 
   XFile? _imageFile;
-  final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final image = await pickImageWithSource(context);
     if (image != null) {
       setState(() {
         _imageFile = image;

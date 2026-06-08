@@ -4,6 +4,10 @@
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>EcoPoin perlu akses lokasi Anda untuk menentukan titik penjemputan sampah.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>EcoPoin perlu akses kamera untuk mengambil foto bukti sampah.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>EcoPoin perlu akses galeri untuk mengunggah foto bukti sampah.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

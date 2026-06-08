@@ -18,6 +18,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_motion.dart';
 import '../../../shared/widgets/labeled_field.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/image_source_sheet.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../dashboard/providers/dashboard_provider.dart';
 import '../../greencoin/providers/greencoin_provider.dart';
@@ -53,7 +54,6 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
   int _selectedTimeSlot = 0;
 
   XFile? _imageFile;
-  final ImagePicker _picker = ImagePicker();
 
   // 4 tanggal real mulai hari ini (WIB)
   late final List<DateTime> _pickupDates;
@@ -102,9 +102,9 @@ class _EcoPickPageState extends ConsumerState<EcoPickPage> {
     return w == null || w <= 0;
   }
 
-  // --- Image Picker ---
+  // --- Image Picker (camera or gallery) ---
   Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final image = await pickImageWithSource(context);
     if (image != null) {
       setState(() {
         _imageFile = image;
