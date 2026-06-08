@@ -24,31 +24,23 @@ class GreenCoinService {
     return (row?['green_coin_balance'] as num?)?.toInt() ?? 0;
   }
 
-  /// Menyimpan permintaan penarikan dengan status [pending].
-  /// Saldo belum dipotong — admin harus menyetujui terlebih dahulu.
-  /// Setelah admin approve, saldo dikurangi dan status menjadi [completed].
-  /// Jika admin reject, status menjadi [rejected] dan saldo tetap utuh.
+  /// Melakukan penarikan secara atomik via RPC: validasi saldo, catat
+  /// withdraw_request, catat transaksi, dan langsung potong saldo — semua
+  /// dalam satu transaksi DB. Pakai RPC (SECURITY DEFINER) karena RLS
+  /// melarang user menulis langsung ke greencoin_transactions (admin-only).
+  /// Nilai rupiah dihitung server-side dari rate trusted, bukan dari client.
   Future<String> createWithdraw(String userId, WithdrawRequest request) async {
     if (!SupabaseConfig.isConfigured) throw Exception('Supabase not configured');
 
-    // Encode wallet & account info into description so admin can see it
-    final description =
-        '${request.walletType} • ${request.maskedAccount} • ${request.accountName}';
+    final id = await SupabaseConfig.client.rpc(
+      'withdraw_greencoin',
+      params: {
+        'p_wallet_provider': request.walletType,
+        'p_account_number': request.accountNumber,
+        'p_amount_gc': request.amountGc,
+      },
+    );
 
-    final row = await SupabaseConfig.client
-        .from('greencoin_transactions')
-        .insert({
-          'user_id': userId,
-          'source_type': 'withdraw',
-          'transaction_type': 'spend',
-          // Negative amount indicates outflow; balance NOT deducted until admin approves
-          'amount_gc': -(request.amountGc.abs()),
-          'status': 'pending',
-          'description': description,
-        })
-        .select('id')
-        .single();
-
-    return row['id'] as String;
+    return id as String;
   }
 }
