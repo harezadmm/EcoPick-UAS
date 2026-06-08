@@ -24,7 +24,7 @@ class AppUser {
       email: map['email'] as String? ?? '',
       phone: map['phone'] as String? ?? '',
       role: (map['role'] as String?) == 'admin' ? UserRole.admin : UserRole.user,
-      greenCoinBalance: map['green_coin_balance'] as int? ?? 0,
+      greenCoinBalance: (map['green_coin_balance'] as num?)?.toInt() ?? 0,
     );
   }
 

@@ -91,6 +91,43 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage> {
     }
   }
 
+  Future<void> _approveWithdraw(AdminCoinTransactionRecord record) async {
+    try {
+      await AdminService().approveWithdraw(record);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Penarikan disetujui — saldo telah dipotong'),
+          backgroundColor: AppColors.primary,
+        ),
+      );
+      _refresh();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
+  Future<void> _rejectWithdraw(AdminCoinTransactionRecord record) async {
+    try {
+      await AdminService().rejectWithdraw(record);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Penarikan ditolak — saldo dikembalikan ke pengguna'),
+        ),
+      );
+      _refresh();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -228,6 +265,8 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage> {
           expandedUsers: _expandedTransactionUsers,
           onChanged: () => setState(() {}),
           onToggle: _toggleExpanded,
+          onApprove: _approveWithdraw,
+          onReject: _rejectWithdraw,
         );
       case AdminSection.marketplace:
         return _MarketplaceView(
@@ -1532,6 +1571,8 @@ class _TransactionsView extends StatelessWidget {
   final Set<String> expandedUsers;
   final VoidCallback onChanged;
   final void Function(Set<String>, String) onToggle;
+  final Future<void> Function(AdminCoinTransactionRecord) onApprove;
+  final Future<void> Function(AdminCoinTransactionRecord) onReject;
 
   const _TransactionsView({
     super.key,
@@ -1540,6 +1581,8 @@ class _TransactionsView extends StatelessWidget {
     required this.expandedUsers,
     required this.onChanged,
     required this.onToggle,
+    required this.onApprove,
+    required this.onReject,
   });
 
   @override
@@ -1579,6 +1622,8 @@ class _TransactionsView extends StatelessWidget {
                         expanded: expandedUsers.contains(groups[i].userId),
                         showDivider: i != groups.length - 1,
                         onTap: () => onToggle(expandedUsers, groups[i].userId),
+                        onApprove: onApprove,
+                        onReject: onReject,
                       ),
                   ],
                 ),
@@ -2092,12 +2137,16 @@ class _TransactionGroupTile extends StatelessWidget {
   final bool expanded;
   final bool showDivider;
   final VoidCallback onTap;
+  final Future<void> Function(AdminCoinTransactionRecord) onApprove;
+  final Future<void> Function(AdminCoinTransactionRecord) onReject;
 
   const _TransactionGroupTile({
     required this.group,
     required this.expanded,
     required this.showDivider,
     required this.onTap,
+    required this.onApprove,
+    required this.onReject,
   });
 
   @override
@@ -2168,7 +2217,11 @@ class _TransactionGroupTile extends StatelessWidget {
                   for (final transaction in group.transactions)
                     Padding(
                       padding: const EdgeInsets.only(bottom: AppSizes.md),
-                      child: _TransactionCard(transaction: transaction),
+                      child: _TransactionCard(
+                        transaction: transaction,
+                        onApprove: onApprove,
+                        onReject: onReject,
+                      ),
                     ),
                 ],
               ),
@@ -2183,13 +2236,39 @@ class _TransactionGroupTile extends StatelessWidget {
   }
 }
 
-class _TransactionCard extends StatelessWidget {
+class _TransactionCard extends StatefulWidget {
   final AdminCoinTransactionRecord transaction;
+  final Future<void> Function(AdminCoinTransactionRecord) onApprove;
+  final Future<void> Function(AdminCoinTransactionRecord) onReject;
 
-  const _TransactionCard({required this.transaction});
+  const _TransactionCard({
+    required this.transaction,
+    required this.onApprove,
+    required this.onReject,
+  });
+
+  @override
+  State<_TransactionCard> createState() => _TransactionCardState();
+}
+
+class _TransactionCardState extends State<_TransactionCard> {
+  bool _busy = false;
+
+  Future<void> _handleAction(Future<void> Function(AdminCoinTransactionRecord) action) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await action(widget.transaction);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final tx = widget.transaction;
+    final isPending = tx.status == 'pending';
+    final amountAbs = tx.amountGc.abs();
     return Container(
       padding: const EdgeInsets.all(AppSizes.lg),
       decoration: BoxDecoration(
@@ -2204,7 +2283,7 @@ class _TransactionCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  transactionCode(transaction.id),
+                  transactionCode(tx.id),
                   style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 16,
@@ -2212,29 +2291,80 @@ class _TransactionCard extends StatelessWidget {
                   ),
                 ),
               ),
-              _StatusChip(status: transaction.status),
+              _StatusChip(status: tx.status),
             ],
           ),
-          const SizedBox(height: AppSizes.md),
-          Text(
-            '${transaction.amountGc} GC',
-            style: const TextStyle(
-              color: AppColors.primary,
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
+          const SizedBox(height: AppSizes.sm),
+          // Wallet / account info from description
+          if (tx.description.trim().isNotEmpty)
+            Text(
+              tx.description,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
           const SizedBox(height: AppSizes.md),
-          Text(
-            transaction.description.trim().isEmpty
-                ? 'Tidak ada aksi'
-                : transaction.description,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-            ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.md,
+                  vertical: AppSizes.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryLight,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.account_balance_wallet_outlined,
+                      size: 14,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$amountAbs GC',
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
+          if (isPending) ...[
+            const SizedBox(height: AppSizes.md),
+            _busy
+                ? const Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  )
+                : Wrap(
+                    spacing: AppSizes.sm,
+                    children: [
+                      _ActionButton(
+                        label: 'Terima',
+                        color: AppColors.primary,
+                        onTap: () => _handleAction(widget.onApprove),
+                      ),
+                      _ActionButton(
+                        label: 'Tolak',
+                        color: AppColors.danger,
+                        onTap: () => _handleAction(widget.onReject),
+                      ),
+                    ],
+                  ),
+          ],
         ],
       ),
     );

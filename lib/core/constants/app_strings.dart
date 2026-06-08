@@ -8,6 +8,9 @@ class AppStrings {
 
   static const double gcToRupiahRate = 100;
   static const int minWithdrawRupiah = 10000;
+
+  /// Minimum withdrawal in GreenCoin units
+  static const int minWithdrawGc = 100;
 }
 
 enum TransactionStatus {

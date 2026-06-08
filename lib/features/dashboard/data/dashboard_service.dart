@@ -14,7 +14,7 @@ class DashboardService {
         .eq('id', userId)
         .maybeSingle();
 
-    final balance = (profile?['green_coin_balance'] as int?) ?? 0;
+    final balance = (profile?['green_coin_balance'] as num?)?.toInt() ?? 0;
 
     final ecopicks = await client
         .from('ecopick_requests')

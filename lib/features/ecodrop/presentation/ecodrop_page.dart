@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
@@ -30,6 +34,18 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
   final _notes = TextEditingController();
   WasteCategory? _selectedCategory;
   bool _submitting = false;
+
+  XFile? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _imageFile = image;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -251,45 +267,74 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
                         ),
                       ),
                       const SizedBox(height: AppSizes.sm),
-                      DottedDashedContainer(
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: AppSizes.xl),
-                          child: Column(
-                            children: [
-                              Container(
-                                width: 56,
-                                height: 56,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.primaryLight,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.camera_alt_outlined,
-                                  color: AppColors.primary,
-                                  size: 28,
-                                ),
+                      if (_imageFile != null)
+                        Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+                              child: Image.file(
+                                File(_imageFile!.path),
+                                width: double.infinity,
+                                height: 200,
+                                fit: BoxFit.cover,
                               ),
-                              const SizedBox(height: AppSizes.md),
-                              Text(
-                                'Unggah foto sampah Anda',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textP(context),
+                            ),
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: IconButton(
+                                style: IconButton.styleFrom(
+                                  backgroundColor: AppColors.surf(context).withValues(alpha: 0.8),
                                 ),
+                                icon: const Icon(Icons.close_rounded, color: AppColors.danger),
+                                onPressed: () => setState(() => _imageFile = null),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Maks. 5MB (JPG, PNG)',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.textT(context),
-                                ),
+                            ),
+                          ],
+                        )
+                      else
+                        GestureDetector(
+                          onTap: _pickImage,
+                          child: DottedDashedContainer(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: AppSizes.xl),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 56,
+                                    height: 56,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.primaryLight,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.camera_alt_outlined,
+                                      color: AppColors.primary,
+                                      size: 28,
+                                    ),
+                                  ),
+                                  const SizedBox(height: AppSizes.md),
+                                  Text(
+                                    'Unggah foto sampah Anda',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.textP(context),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Maks. 5MB (JPG, PNG)',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.textT(context),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -405,6 +450,17 @@ class _EcoDropPageState extends ConsumerState<EcoDropPage> {
 }
 
 class _BankSampahCard extends StatelessWidget {
+  Future<void> _launchMaps(BuildContext context) async {
+    final url = Uri.parse('https://maps.app.goo.gl/67Y8qxkdbBvCjRCy9');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal membuka peta.')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppCard(
@@ -474,38 +530,41 @@ class _BankSampahCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSizes.lg,
-                    vertical: AppSizes.sm,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.surf(context),
-                    borderRadius: BorderRadius.circular(AppSizes.radiusPill),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 12,
-                      ),
-                    ],
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.navigation_rounded,
-                        color: AppColors.primary,
-                        size: 16,
-                      ),
-                      SizedBox(width: 6),
-                      Text(
-                        'Petunjuk Arah',
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w700,
+                GestureDetector(
+                  onTap: () => _launchMaps(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSizes.lg,
+                      vertical: AppSizes.sm,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.surf(context),
+                      borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 12,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.navigation_rounded,
+                          color: AppColors.primary,
+                          size: 16,
+                        ),
+                        SizedBox(width: 6),
+                        Text(
+                          'Petunjuk Arah',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

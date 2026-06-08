@@ -18,6 +18,28 @@ class WithdrawSuccessPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Helper baris tabel ringkasan
+    Widget kv(String k, String v, {Color? valueColor}) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  k,
+                  style: TextStyle(color: AppColors.textS(context)),
+                ),
+              ),
+              Text(
+                v,
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: valueColor ?? AppColors.textP(context),
+                ),
+              ),
+            ],
+          ),
+        );
+
     return Scaffold(
       backgroundColor: AppColors.bg(context),
       body: SafeArea(
@@ -28,9 +50,9 @@ class WithdrawSuccessPage extends StatelessWidget {
             const SuccessHeader(
               icon: Icons.account_balance_wallet_outlined,
               assetPath: AppIcons.wallet,
-              title: 'Tarik Dana Berhasil',
+              title: 'Permintaan Terkirim!',
               subtitle:
-                  'Permintaan pencairan GreenCoin Anda sedang diproses ke tujuan yang dipilih.',
+                  'Permintaan penarikan GreenCoin Anda sedang menunggu persetujuan admin. Saldo akan dikurangi setelah disetujui.',
             ),
             const SizedBox(height: AppSizes.xl),
             AppCard(
@@ -47,34 +69,42 @@ class WithdrawSuccessPage extends StatelessWidget {
                           color: AppColors.textP(context),
                         ),
                       ),
-                      Spacer(),
-                      StatusBadge(
-                        status: TransactionStatus.process,
-                        customLabel: 'DIPROSES',
+                      const Spacer(),
+                      const StatusBadge(
+                        status: TransactionStatus.pending,
+                        customLabel: 'MENUNGGU REVIEW',
                       ),
                     ],
                   ),
                   const SizedBox(height: AppSizes.lg),
-                  _row(context,
+                  kv(
                     'Jumlah ditarik',
-                    request != null ? Formatters.greenCoin(request!.amountGc) : '2,000 GC',
+                    request != null
+                        ? Formatters.greenCoin(request!.amountGc)
+                        : '2,000 GC',
                     valueColor: AppColors.primary,
                   ),
-                  _row(context,
+                  kv(
                     'Nilai rupiah',
-                    request != null ? Formatters.rupiah(request!.amountRupiah) : 'Rp 200.000'
+                    request != null
+                        ? Formatters.rupiah(request!.amountRupiah)
+                        : 'Rp 200.000',
                   ),
-                  _row(context,
+                  kv(
                     'Tujuan pencairan',
-                    request?.maskedAccount ?? 'BCA •••• 4821'
+                    request?.maskedAccount ?? 'BCA •••• 4821',
                   ),
-                  _row(context, 'Estimasi masuk', 'Maks. 1 x 24 jam'),
+                  kv('Estimasi review', 'Maks. 1 x 24 jam'),
                   const Divider(height: 32),
-                  _row(context,
-                    'Sisa saldo',
-                    request != null ? Formatters.greenCoin(request!.remainingBalanceGc) : '3,240 GC',
+                  kv(
+                    'Saldo saat ini',
+                    request != null
+                        ? Formatters.greenCoin(
+                            request!.remainingBalanceGc + request!.amountGc,
+                          )
+                        : '19,600 GC',
                   ),
-                  _row(context, 
+                  kv(
                     'Nomor referensi',
                     'GWD-260612-0041',
                     valueColor: AppColors.textT(context),
@@ -96,7 +126,7 @@ class WithdrawSuccessPage extends StatelessWidget {
                     children: [
                       Icon(Icons.info_outline,
                           color: AppColors.primary, size: 16),
-                      SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       Text(
                         'Informasi penting',
                         style: TextStyle(
@@ -148,30 +178,10 @@ class WithdrawSuccessPage extends StatelessWidget {
     );
   }
 
-  Widget _row(BuildContext context, String k, String v, {Color? valueColor}) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                k,
-                style: TextStyle(color: AppColors.textS(context)),
-              ),
-            ),
-            Text(
-              v,
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: valueColor ?? AppColors.textP(context),
-              ),
-            ),
-          ],
-        ),
-      );
-
   static const _bullets = [
-    'Dana akan dikirim ke rekening tujuan sesuai estimasi proses.',
-    'Riwayat penarikan dapat dilihat pada halaman GreenCoin.',
-    'Hubungi dukungan jika dana belum masuk setelah estimasi waktu berakhir.',
+    'Saldo GreenCoin Anda BELUM berkurang — admin harus menyetujui dahulu.',
+    'Setelah disetujui, saldo dikurangi dan dana dikirim ke e-wallet tujuan.',
+    'Jika ditolak, permintaan dibatalkan dan saldo tetap utuh.',
+    'Riwayat permintaan dapat dilihat pada halaman GreenCoin.',
   ];
 }

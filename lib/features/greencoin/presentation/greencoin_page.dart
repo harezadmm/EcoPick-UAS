@@ -99,34 +99,6 @@ class _GreenCoinPageState extends ConsumerState<GreenCoinPage> {
                         fontSize: 13,
                       ),
                     ),
-                    const SizedBox(height: AppSizes.sm),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSizes.sm,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        borderRadius:
-                            BorderRadius.circular(AppSizes.radiusPill),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.trending_up,
-                              size: 14, color: Colors.white),
-                          SizedBox(width: 4),
-                          Text(
-                            '+12% bulan ini',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                     const SizedBox(height: AppSizes.lg),
                     SizedBox(
                       width: double.infinity,

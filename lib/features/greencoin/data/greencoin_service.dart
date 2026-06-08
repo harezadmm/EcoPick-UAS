@@ -21,26 +21,34 @@ class GreenCoinService {
         .select('green_coin_balance')
         .eq('id', userId)
         .maybeSingle();
-    return (row?['green_coin_balance'] as int?) ?? 0;
+    return (row?['green_coin_balance'] as num?)?.toInt() ?? 0;
   }
 
+  /// Menyimpan permintaan penarikan dengan status [pending].
+  /// Saldo belum dipotong — admin harus menyetujui terlebih dahulu.
+  /// Setelah admin approve, saldo dikurangi dan status menjadi [completed].
+  /// Jika admin reject, status menjadi [rejected] dan saldo tetap utuh.
   Future<String> createWithdraw(String userId, WithdrawRequest request) async {
     if (!SupabaseConfig.isConfigured) throw Exception('Supabase not configured');
 
-    // Atomic withdrawal via RPC: creates the request, records the transaction,
-    // and deducts the balance in one transaction (bypasses admin-only RLS on
-    // greencoin_transactions via SECURITY DEFINER while verifying ownership).
-    // The rupiah payout is computed server-side from a trusted rate, never
-    // sent by the client, so it can't be tampered with.
-    final id = await SupabaseConfig.client.rpc(
-      'withdraw_greencoin',
-      params: {
-        'p_wallet_provider': request.walletType,
-        'p_account_number': request.accountNumber,
-        'p_amount_gc': request.amountGc,
-      },
-    );
+    // Encode wallet & account info into description so admin can see it
+    final description =
+        '${request.walletType} • ${request.maskedAccount} • ${request.accountName}';
 
-    return id as String;
+    final row = await SupabaseConfig.client
+        .from('greencoin_transactions')
+        .insert({
+          'user_id': userId,
+          'source_type': 'withdraw',
+          'transaction_type': 'spend',
+          // Negative amount indicates outflow; balance NOT deducted until admin approves
+          'amount_gc': -(request.amountGc.abs()),
+          'status': 'pending',
+          'description': description,
+        })
+        .select('id')
+        .single();
+
+    return row['id'] as String;
   }
 }

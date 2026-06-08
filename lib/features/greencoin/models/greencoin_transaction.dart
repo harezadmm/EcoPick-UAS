@@ -22,7 +22,7 @@ class GreenCoinTransaction {
       id: map['id'] as String,
       sourceType: map['source_type'] as String? ?? 'adjustment',
       transactionType: map['transaction_type'] as String? ?? 'earn',
-      amountGc: map['amount_gc'] as int? ?? 0,
+      amountGc: (map['amount_gc'] as num?)?.toInt() ?? 0,
       status: map['status'] as String? ?? 'completed',
       description: map['description'] as String?,
       createdAt:

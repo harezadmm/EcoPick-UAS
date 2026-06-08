@@ -9,7 +9,6 @@ import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/labeled_field.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../auth/providers/auth_provider.dart';
-import '../../dashboard/providers/dashboard_provider.dart';
 import '../data/greencoin_service.dart';
 import '../models/withdraw_request.dart';
 import '../providers/greencoin_provider.dart';
@@ -37,12 +36,12 @@ class WithdrawBottomSheet extends ConsumerStatefulWidget {
 
 class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
   int _selectedWallet = 0;
-  int _selectedPreset = 2;
+  late int _selectedPreset = _getInitialPreset();
   bool _confirmed = false;
   bool _isCustomAmount = false;
   int _customAmount = 0;
-  final _accountCtrl = TextEditingController(text: '0812 3456 7890');
-  final _nameCtrl = TextEditingController(text: 'Alexa M.');
+  final _accountCtrl = TextEditingController();
+  final _nameCtrl = TextEditingController();
   final _customAmountCtrl = TextEditingController();
 
   final _wallets = const [
@@ -54,11 +53,21 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
 
   final _presets = const [500, 1000, 2000, -1];
 
+  int _getInitialPreset() {
+    for (int i = _presets.length - 2; i >= 0; i--) {
+      if (_presets[i] <= widget.balanceGc) return i;
+    }
+    return _presets.length - 1; // 'Semua'
+  }
+
   int get _amount {
-    if (_isCustomAmount && _customAmount > 0) return _customAmount;
-    return _presets[_selectedPreset] == -1
+    if (_isCustomAmount && _customAmount > 0) {
+      return _customAmount > widget.balanceGc ? widget.balanceGc : _customAmount;
+    }
+    final presetAmount = _presets[_selectedPreset] == -1
         ? widget.balanceGc
         : _presets[_selectedPreset];
+    return presetAmount > widget.balanceGc ? widget.balanceGc : presetAmount;
   }
 
   int get _rupiah => Formatters.rupiahFromGc(_amount);
@@ -72,27 +81,26 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
   }
 
   Future<void> _confirm() async {
+    if (_accountCtrl.text.trim().isEmpty || _nameCtrl.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nomor tujuan dan nama pemilik akun harus diisi')),
+      );
+      return;
+    }
     if (!_confirmed) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Mohon centang konfirmasi data')),
       );
       return;
     }
-    if (_rupiah < AppStrings.minWithdrawRupiah) {
+    if (_amount < AppStrings.minWithdrawGc) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Minimal penarikan Rp 10.000')),
-      );
-      return;
-    }
-    // amount_rupiah is stored as int4 (max ~2.1B); cap a single withdrawal
-    // at Rp 2.000.000.000 to stay within range.
-    const maxWithdrawRupiah = 2000000000;
-    if (_rupiah > maxWithdrawRupiah) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(
-          'Maksimal penarikan Rp 2.000.000.000 per transaksi '
-          '(${Formatters.greenCoin(maxWithdrawRupiah ~/ AppStrings.gcToRupiahRate.toInt())})',
-        )),
+        SnackBar(
+          content: Text(
+            'Minimal penarikan ${AppStrings.minWithdrawGc} GC'
+            ' (≈ ${Formatters.rupiah(Formatters.rupiahFromGc(AppStrings.minWithdrawGc))})',
+          ),
+        ),
       );
       return;
     }
@@ -128,10 +136,7 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
     try {
       await GreenCoinService().createWithdraw(user.id, request);
 
-      // Invalidate providers to refresh data
-      ref.invalidate(currentUserProvider);
-      ref.invalidate(dashboardProvider);
-      ref.invalidate(greenCoinBalanceProvider);
+      // Invalidate providers to refresh transaction history (balance unchanged until admin approves)
       ref.invalidate(greenCoinTransactionsProvider);
 
       // Give providers a moment to refresh
@@ -350,12 +355,19 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
                     const SizedBox(height: AppSizes.sm),
                     LabeledField(
                       label: 'Nomor tujuan',
-                      child: AppTextField(controller: _accountCtrl),
+                      child: AppTextField(
+                        controller: _accountCtrl,
+                        hint: '0812 3456 7890',
+                        keyboardType: TextInputType.phone,
+                      ),
                     ),
                     const SizedBox(height: AppSizes.sm),
                     LabeledField(
                       label: 'Nama pemilik akun',
-                      child: AppTextField(controller: _nameCtrl),
+                      child: AppTextField(
+                        controller: _nameCtrl,
+                        hint: 'Alexa M.',
+                      ),
                     ),
                     const SizedBox(height: AppSizes.lg),
                     Text(
@@ -390,41 +402,46 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
                       spacing: AppSizes.sm,
                       children: [
                         ...List.generate(_presets.length, (i) {
+                          final presetVal = _presets[i] == -1 ? widget.balanceGc : _presets[i];
+                          final bool disabled = _presets[i] != -1 && presetVal > widget.balanceGc;
                           final selected = !_isCustomAmount && i == _selectedPreset;
                           final label = _presets[i] == -1
                               ? 'Semua'
                               : Formatters.compactNumber(_presets[i]);
                           return GestureDetector(
-                            onTap: () => setState(() {
+                            onTap: disabled ? null : () => setState(() {
                               _selectedPreset = i;
                               _isCustomAmount = false;
                               _customAmountCtrl.clear();
                             }),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSizes.lg,
-                                vertical: AppSizes.sm,
-                              ),
-                              decoration: BoxDecoration(
-                                color: selected
-                                    ? AppColors.primary
-                                    : AppColors.surface,
-                                borderRadius: BorderRadius.circular(
-                                  AppSizes.radiusPill,
+                            child: Opacity(
+                              opacity: disabled ? 0.4 : 1.0,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSizes.lg,
+                                  vertical: AppSizes.sm,
                                 ),
-                                border: Border.all(
+                                decoration: BoxDecoration(
                                   color: selected
                                       ? AppColors.primary
-                                      : AppColors.brd(context),
+                                      : AppColors.surface,
+                                  borderRadius: BorderRadius.circular(
+                                    AppSizes.radiusPill,
+                                  ),
+                                  border: Border.all(
+                                    color: selected
+                                        ? AppColors.primary
+                                        : AppColors.brd(context),
+                                  ),
                                 ),
-                              ),
-                              child: Text(
-                                label,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: selected
-                                      ? Colors.white
-                                      : AppColors.textS(context),
+                                child: Text(
+                                  label,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: selected
+                                        ? Colors.white
+                                        : AppColors.textS(context),
+                                  ),
                                 ),
                               ),
                             ),
@@ -480,8 +497,16 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
                           ),
                         ),
                         onChanged: (value) {
+                          int val = int.tryParse(value) ?? 0;
+                          if (val > widget.balanceGc) {
+                            val = widget.balanceGc;
+                            _customAmountCtrl.text = val.toString();
+                            _customAmountCtrl.selection = TextSelection.fromPosition(
+                              TextPosition(offset: _customAmountCtrl.text.length),
+                            );
+                          }
                           setState(() {
-                            _customAmount = int.tryParse(value) ?? 0;
+                            _customAmount = val;
                           });
                         },
                       ),
@@ -574,13 +599,28 @@ class _WithdrawBottomSheetState extends ConsumerState<WithdrawBottomSheet> {
                           ),
                           SizedBox(width: AppSizes.sm),
                           Expanded(
-                            child: Text(
-                              'Pencairan biasanya membutuhkan waktu 1–5 menit. Pastikan nomor e-wallet aktif untuk menghindari kegagalan transaksi.',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textS(context),
-                                height: 1.4,
-                              ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Minimal penarikan: ${AppStrings.minWithdrawGc} GC',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.info,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Permintaan akan diproses oleh admin. '
+                                  'Saldo GreenCoin Anda baru akan dikurangi setelah admin menyetujui penarikan.',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textS(context),
+                                    height: 1.4,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],

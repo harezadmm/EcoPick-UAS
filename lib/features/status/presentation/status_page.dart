@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_motion.dart';
 import '../../../shared/widgets/status_badge.dart';
+import '../models/waste_request.dart';
+import '../providers/status_provider.dart';
 
-class StatusPage extends StatefulWidget {
+class StatusPage extends ConsumerStatefulWidget {
   const StatusPage({super.key});
 
   @override
-  State<StatusPage> createState() => _StatusPageState();
+  ConsumerState<StatusPage> createState() => _StatusPageState();
 }
 
-class _StatusPageState extends State<StatusPage> {
+class _StatusPageState extends ConsumerState<StatusPage> {
   int _tab = 0;
 
   @override
@@ -78,74 +82,67 @@ class _StatusPageState extends State<StatusPage> {
               ),
             ),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSizes.xl,
-                  AppSizes.sm,
-                  AppSizes.xl,
-                  AppSizes.xl,
-                ),
-                children: const [
-                  MotionFadeSlide(
-                    delayMs: 40,
-                    child: _StatusCard(
-                      icon: Icons.local_shipping_rounded,
-                      iconColor: AppColors.primary,
-                      iconBg: AppColors.primaryLight,
-                      type: 'EcoPick',
-                      date: '24 Okt 2023 • 14:20',
-                      category: 'Plastik & Botol',
-                      weight: '5.2 kg',
-                      estimatedGc: 150,
-                      status: TransactionStatus.completed,
+              child: ref.watch(userWasteRequestsProvider).when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (err, _) => Center(child: Text(err.toString())),
+                data: (requests) {
+                  // Filter based on tab
+                  final filtered = requests.where((req) {
+                    if (_tab == 0) return true; // Semua
+                    if (_tab == 1) {
+                      return req.status == TransactionStatus.pending ||
+                          req.status == TransactionStatus.process;
+                    } // Aktif
+                    return req.status == TransactionStatus.completed ||
+                        req.status == TransactionStatus.rejected ||
+                        req.status == TransactionStatus.cancelled; // Selesai
+                  }).toList();
+
+                  if (filtered.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'Belum ada transaksi',
+                        style: TextStyle(color: AppColors.textS(context)),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSizes.xl,
+                      AppSizes.sm,
+                      AppSizes.xl,
+                      AppSizes.xl,
                     ),
-                  ),
-                  SizedBox(height: AppSizes.sm),
-                  MotionFadeSlide(
-                    delayMs: 90,
-                    child: _StatusCard(
-                      icon: Icons.location_on_rounded,
-                      iconColor: AppColors.primary,
-                      iconBg: AppColors.primaryLight,
-                      type: 'EcoDrop',
-                      date: '22 Okt 2023 • 10:24',
-                      category: 'Botol Plastik',
-                      weight: '3.5 kg',
-                      estimatedGc: 95,
-                      status: TransactionStatus.process,
-                    ),
-                  ),
-                  SizedBox(height: AppSizes.sm),
-                  MotionFadeSlide(
-                    delayMs: 140,
-                    child: _StatusCard(
-                      icon: Icons.local_shipping_rounded,
-                      iconColor: AppColors.primary,
-                      iconBg: AppColors.primaryLight,
-                      type: 'EcoPick',
-                      date: '20 Okt 2023 • 08:00',
-                      category: 'Elektronik',
-                      weight: '2.0 kg',
-                      estimatedGc: 1000,
-                      status: TransactionStatus.pending,
-                    ),
-                  ),
-                  SizedBox(height: AppSizes.sm),
-                  MotionFadeSlide(
-                    delayMs: 190,
-                    child: _StatusCard(
-                      icon: Icons.location_on_rounded,
-                      iconColor: AppColors.danger,
-                      iconBg: AppColors.statusRejected,
-                      type: 'EcoDrop',
-                      date: '18 Okt 2023 • 11:45',
-                      category: 'Kertas',
-                      weight: '1.5 kg',
-                      estimatedGc: 0,
-                      status: TransactionStatus.rejected,
-                    ),
-                  ),
-                ],
+                    itemCount: filtered.length,
+                    itemBuilder: (context, i) {
+                      final req = filtered[i];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: AppSizes.sm),
+                        child: MotionFadeSlide(
+                          delayMs: (i * 50).clamp(0, 500),
+                          child: _StatusCard(
+                            icon: req.type == 'EcoPick'
+                                ? Icons.local_shipping_rounded
+                                : Icons.location_on_rounded,
+                            iconColor: req.status == TransactionStatus.rejected || req.status == TransactionStatus.cancelled
+                                ? AppColors.danger
+                                : AppColors.primary,
+                            iconBg: req.status == TransactionStatus.rejected || req.status == TransactionStatus.cancelled
+                                ? AppColors.statusRejected
+                                : AppColors.primaryLight,
+                            type: req.type,
+                            date: Formatters.dateTime(req.createdAt),
+                            category: req.categoryName,
+                            weight: Formatters.weight(req.weightKg),
+                            estimatedGc: req.estimatedGc,
+                            status: req.status,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],

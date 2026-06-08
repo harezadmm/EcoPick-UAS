@@ -35,7 +35,7 @@ class AdminUserRecord {
       name: name.trim().isEmpty ? _nameFromEmail(email) : name,
       email: email,
       role: map['role'] as String? ?? 'user',
-      greenCoinBalance: map['green_coin_balance'] as int? ?? 0,
+      greenCoinBalance: _toInt(map['green_coin_balance']),
     );
   }
 }
@@ -252,11 +252,48 @@ class AdminService {
   }
 
   Future<List<AdminCoinTransactionRecord>> _fetchGreenCoinTransactions() async {
+    // Only fetch withdraw requests — ecopick/ecodrop are managed in their own sections
     final rows = await SupabaseConfig.client
         .from('greencoin_transactions')
         .select('*, profiles:user_id(*)')
+        .eq('source_type', 'withdraw')
         .order('created_at', ascending: false);
     return [for (final row in rows) AdminCoinTransactionRecord.fromMap(row)];
+  }
+
+  /// Menyetujui permintaan penarikan: memotong saldo user dan menandai transaksi selesai.
+  Future<void> approveWithdraw(AdminCoinTransactionRecord record) async {
+    if (!SupabaseConfig.isConfigured) return;
+
+    // Deduct balance from user profile
+    final profileRow = await SupabaseConfig.client
+        .from('profiles')
+        .select('green_coin_balance')
+        .eq('id', record.userId)
+        .single();
+    final currentBalance = _toInt(profileRow['green_coin_balance']);
+    // amountGc is stored as negative for withdrawals
+    final newBalance = currentBalance + record.amountGc;
+    if (newBalance < 0) throw Exception('Saldo tidak mencukupi untuk disetujui');
+
+    await SupabaseConfig.client
+        .from('profiles')
+        .update({'green_coin_balance': newBalance})
+        .eq('id', record.userId);
+
+    await SupabaseConfig.client
+        .from('greencoin_transactions')
+        .update({'status': 'completed'})
+        .eq('id', record.id);
+  }
+
+  /// Menolak permintaan penarikan: saldo tidak berubah (belum pernah dipotong).
+  Future<void> rejectWithdraw(AdminCoinTransactionRecord record) async {
+    if (!SupabaseConfig.isConfigured) return;
+    await SupabaseConfig.client
+        .from('greencoin_transactions')
+        .update({'status': 'rejected'})
+        .eq('id', record.id);
   }
 
   Future<List<AdminMarketplaceProductRecord>> _fetchProducts() async {
@@ -538,39 +575,40 @@ AdminDashboardSnapshot _demoSnapshot() {
     ),
   ];
 
+  // Demo: only withdraw requests appear in Transaction Management
   final transactions = [
     AdminCoinTransactionRecord(
-      id: ecopicks[0].id,
+      id: '00000000-0000-0000-0000-00000000w001',
       userId: users[0].id,
       userName: users[0].name,
       userEmail: users[0].email,
-      sourceType: 'ecopick',
-      status: 'completed',
-      description: 'Tidak ada aksi',
-      amountGc: 19600,
-      createdAt: now,
+      sourceType: 'withdraw',
+      status: 'pending',
+      description: 'DANA \u2022 DANA \u2022\u2022\u2022\u2022 1234 \u2022 test',
+      amountGc: -2000,
+      createdAt: now.subtract(const Duration(minutes: 2)),
     ),
     AdminCoinTransactionRecord(
-      id: ecopicks[1].id,
-      userId: users[0].id,
-      userName: users[0].name,
-      userEmail: users[0].email,
-      sourceType: 'ecopick',
-      status: 'completed',
-      description: 'Tidak ada aksi',
-      amountGc: 0,
-      createdAt: now.subtract(const Duration(minutes: 4)),
+      id: '00000000-0000-0000-0000-00000000w002',
+      userId: users[2].id,
+      userName: users[2].name,
+      userEmail: users[2].email,
+      sourceType: 'withdraw',
+      status: 'pending',
+      description: 'GoPay \u2022 GoPay \u2022\u2022\u2022\u2022 5678 \u2022 harizzss',
+      amountGc: -500,
+      createdAt: now.subtract(const Duration(minutes: 15)),
     ),
     AdminCoinTransactionRecord(
-      id: ecodrops[0].id,
+      id: '00000000-0000-0000-0000-00000000w003',
       userId: users[3].id,
       userName: users[3].name,
       userEmail: users[3].email,
-      sourceType: 'ecodrop',
+      sourceType: 'withdraw',
       status: 'completed',
-      description: 'Tidak ada aksi',
-      amountGc: 18000,
-      createdAt: now.subtract(const Duration(minutes: 7)),
+      description: 'OVO \u2022 OVO \u2022\u2022\u2022\u2022 9012 \u2022 harus',
+      amountGc: -1000,
+      createdAt: now.subtract(const Duration(hours: 2)),
     ),
   ];
 
@@ -616,8 +654,7 @@ AdminDashboardSnapshot _demoSnapshot() {
   return AdminDashboardSnapshot(
     stats: AdminDashboardStats(
       totalUsers: users.length,
-      totalTransactions:
-          transactions.length + ecopicks.length + ecodrops.length,
+      totalTransactions: transactions.length,
       recycledKg: [
         ...ecopicks.where((item) => item.status == 'completed'),
         ...ecodrops.where((item) => item.status == 'completed'),
