@@ -28,7 +28,10 @@ class Formatters {
 
   static String weight(num value) {
     if (value == value.truncate()) return '${value.toInt()} kg';
-    return '${value.toStringAsFixed(1)} kg';
+    // Use a comma as the decimal separator (id_ID) so it matches how the
+    // dashboard's count-up parser reads numbers (dot = thousands, comma =
+    // decimal). Returning a dot here makes "7.1" parse as "71".
+    return '${value.toStringAsFixed(1).replaceAll('.', ',')} kg';
   }
 
   static String compactNumber(num value) => _number.format(value);

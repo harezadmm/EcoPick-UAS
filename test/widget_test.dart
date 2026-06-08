@@ -21,7 +21,10 @@ void main() {
 
     test('Weight formatting handles integers and decimals', () {
       expect(Formatters.weight(45), '45 kg');
-      expect(Formatters.weight(3.5), '3.5 kg');
+      expect(Formatters.weight(3.5), '3,5 kg');
+      // Decimal uses a comma so the dashboard count-up parser doesn't read
+      // "7.1" as "71" (dot = thousands separator there).
+      expect(Formatters.weight(7.14), '7,1 kg');
     });
   });
 
