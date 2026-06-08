@@ -50,3 +50,4 @@ app.*.map.json
 
 # Heavy source icons — optimized versions are in assets/icons/
 /ICON/
+.claude/
