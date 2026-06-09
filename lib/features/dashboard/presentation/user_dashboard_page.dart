@@ -98,21 +98,25 @@ class _Header extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: AppSizes.sm),
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.primaryTint(context),
-                width: 2,
+          GestureDetector(
+            onTap: () => context.go('/profile'),
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.primaryTint(context),
+                  width: 2,
+                ),
               ),
-            ),
-            child: const ClipOval(
-              child: Icon(
-                Icons.person_rounded,
-                color: AppColors.primary,
-                size: 24,
+              child: const ClipOval(
+                child: Icon(
+                  Icons.person_rounded,
+                  color: AppColors.primary,
+                  size: 24,
+                ),
               ),
             ),
           ),
@@ -253,15 +257,16 @@ class _Body extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Text(
-                      'Aktivitas Daur Ulang',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textP(context),
+                    Expanded(
+                      child: Text(
+                        'Aktivitas Daur Ulang',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textP(context),
+                        ),
                       ),
                     ),
-                    const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSizes.sm,
@@ -272,22 +277,12 @@ class _Body extends ConsumerWidget {
                         borderRadius:
                             BorderRadius.circular(AppSizes.radiusPill),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '7 Hari Terakhir',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textS(context),
-                            ),
-                          ),
-                          Icon(
-                            Icons.expand_more,
-                            size: 16,
-                            color: AppColors.textS(context),
-                          ),
-                        ],
+                      child: Text(
+                        '7 Hari Terakhir',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textS(context),
+                        ),
                       ),
                     ),
                   ],
@@ -676,6 +671,25 @@ class _WeeklyChart extends StatelessWidget {
     const days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
     final hasData = maxVal > 0;
 
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Responsive bar width: fit all bars within available width with gaps,
+        // clamped to a sensible range so it looks good on any screen size.
+        final count = weights.isEmpty ? 1 : weights.length;
+        final barWidth =
+            ((constraints.maxWidth / count) * 0.45).clamp(10.0, 28.0);
+        return _buildChart(context, days, maxVal, hasData, barWidth);
+      },
+    );
+  }
+
+  Widget _buildChart(
+    BuildContext context,
+    List<String> days,
+    double maxVal,
+    bool hasData,
+    double barWidth,
+  ) {
     return BarChart(
       BarChartData(
         alignment: BarChartAlignment.spaceAround,
@@ -748,7 +762,7 @@ class _WeeklyChart extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 toY: value <= 0 ? 0.3 : value,
-                width: 24,
+                width: barWidth,
                 color: isMax ? AppColors.primary : AppColors.primaryLight,
                 borderRadius: const BorderRadius.all(Radius.circular(12)),
               ),

@@ -7,6 +7,7 @@ class AppUser {
   final String phone;
   final UserRole role;
   final int greenCoinBalance;
+  final String? avatarUrl;
 
   const AppUser({
     required this.id,
@@ -15,6 +16,7 @@ class AppUser {
     required this.phone,
     required this.role,
     required this.greenCoinBalance,
+    this.avatarUrl,
   });
 
   factory AppUser.fromMap(Map<String, dynamic> map) {
@@ -25,6 +27,7 @@ class AppUser {
       phone: map['phone'] as String? ?? '',
       role: (map['role'] as String?) == 'admin' ? UserRole.admin : UserRole.user,
       greenCoinBalance: (map['green_coin_balance'] as num?)?.toInt() ?? 0,
+      avatarUrl: map['avatar_url'] as String?,
     );
   }
 
@@ -34,6 +37,7 @@ class AppUser {
     String? phone,
     UserRole? role,
     int? greenCoinBalance,
+    String? avatarUrl,
   }) {
     return AppUser(
       id: id,
@@ -42,6 +46,7 @@ class AppUser {
       phone: phone ?? this.phone,
       role: role ?? this.role,
       greenCoinBalance: greenCoinBalance ?? this.greenCoinBalance,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
     );
   }
 

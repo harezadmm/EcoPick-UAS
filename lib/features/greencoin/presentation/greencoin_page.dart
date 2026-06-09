@@ -127,45 +127,13 @@ class _GreenCoinPageState extends ConsumerState<GreenCoinPage> {
                 ),
               ),
               const SizedBox(height: AppSizes.lg),
-              Row(
-                children: [
-                  Text(
-                    'Riwayat Transaksi',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textP(context),
-                    ),
-                  ),
-                  const Spacer(),
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryLight,
-                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                    ),
-                    child: const Icon(
-                      Icons.tune_rounded,
-                      size: 18,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(width: AppSizes.sm),
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryLight,
-                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                    ),
-                    child: const Icon(
-                      Icons.download_rounded,
-                      size: 18,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
+              Text(
+                'Riwayat Transaksi',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textP(context),
+                ),
               ),
               const SizedBox(height: AppSizes.md),
               _SegmentTabs(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,8 +8,11 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_motion.dart';
+import '../../../shared/widgets/labeled_field.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/image_source_sheet.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../data/profile_service.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -17,11 +22,134 @@ class ProfilePage extends ConsumerStatefulWidget {
 }
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
-  bool _obscure = true;
+  final _nameCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
+  final _currentPwCtrl = TextEditingController();
+  final _newPwCtrl = TextEditingController();
+
+  bool _obscureCurrent = true;
+  bool _obscureNew = true;
+  bool _savingProfile = false;
+  bool _savingPassword = false;
+  bool _uploadingAvatar = false;
+  bool _initialized = false;
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _emailCtrl.dispose();
+    _phoneCtrl.dispose();
+    _currentPwCtrl.dispose();
+    _newPwCtrl.dispose();
+    super.dispose();
+  }
+
+  void _hydrate() {
+    if (_initialized) return;
+    final user = ref.read(currentUserProvider);
+    _nameCtrl.text = user?.fullName ?? '';
+    _emailCtrl.text = user?.email ?? '';
+    _phoneCtrl.text = user?.phone ?? '';
+    _initialized = true;
+  }
+
+  Future<void> _changeAvatar() async {
+    final user = ref.read(currentUserProvider);
+    if (user == null) return;
+    final picked = await pickImageWithSource(context);
+    if (picked == null) return;
+
+    setState(() => _uploadingAvatar = true);
+    try {
+      final url = await ProfileService().uploadAvatar(
+        userId: user.id,
+        file: File(picked.path),
+      );
+      ref.read(currentUserProvider.notifier).state =
+          user.copyWith(avatarUrl: url);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Foto profil diperbarui')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal mengunggah foto: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _uploadingAvatar = false);
+    }
+  }
+
+  Future<void> _saveProfile() async {
+    final user = ref.read(currentUserProvider);
+    if (user == null) return;
+
+    final name = _nameCtrl.text.trim();
+    final email = _emailCtrl.text.trim();
+    final phone = _phoneCtrl.text.trim();
+
+    if (name.isEmpty) {
+      _toast('Nama lengkap tidak boleh kosong');
+      return;
+    }
+    if (email.isEmpty || !email.contains('@')) {
+      _toast('Email tidak valid');
+      return;
+    }
+
+    setState(() => _savingProfile = true);
+    try {
+      final updated = await ProfileService().updateProfile(
+        userId: user.id,
+        fullName: name,
+        email: email,
+        phone: phone,
+      );
+      if (updated != null) {
+        ref.read(currentUserProvider.notifier).state = updated;
+      }
+      if (!mounted) return;
+      _toast('Profil berhasil diperbarui');
+    } catch (e) {
+      if (!mounted) return;
+      _toast('Gagal menyimpan profil: $e');
+    } finally {
+      if (mounted) setState(() => _savingProfile = false);
+    }
+  }
+
+  Future<void> _changePassword() async {
+    final newPw = _newPwCtrl.text;
+    if (newPw.length < 8) {
+      _toast('Kata sandi baru minimal 8 karakter');
+      return;
+    }
+    setState(() => _savingPassword = true);
+    try {
+      await ProfileService().updatePassword(newPw);
+      if (!mounted) return;
+      _currentPwCtrl.clear();
+      _newPwCtrl.clear();
+      _toast('Kata sandi berhasil diubah');
+    } catch (e) {
+      if (!mounted) return;
+      _toast('Gagal mengubah kata sandi: $e');
+    } finally {
+      if (mounted) setState(() => _savingPassword = false);
+    }
+  }
+
+  void _toast(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
 
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider);
+    _hydrate();
+
     return Scaffold(
       backgroundColor: AppColors.bg(context),
       appBar: AppBar(
@@ -39,41 +167,62 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             children: [
               const SizedBox(height: AppSizes.md),
               Center(
-                child: Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      width: 96,
-                      height: 96,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
+                child: GestureDetector(
+                  onTap: _uploadingAvatar ? null : _changeAvatar,
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      Container(
+                        width: 96,
+                        height: 96,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColors.primaryLight,
+                            width: 3,
+                          ),
                           color: AppColors.primaryLight,
-                          width: 3,
+                          image: (user?.avatarUrl != null &&
+                                  user!.avatarUrl!.isNotEmpty)
+                              ? DecorationImage(
+                                  image: NetworkImage(user.avatarUrl!),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
                         ),
-                        color: AppColors.primaryLight,
+                        child: (user?.avatarUrl == null ||
+                                (user?.avatarUrl?.isEmpty ?? true))
+                            ? const Icon(
+                                Icons.person,
+                                color: AppColors.primary,
+                                size: 56,
+                              )
+                            : null,
                       ),
-                      child: const Icon(
-                        Icons.person,
-                        color: AppColors.primary,
-                        size: 56,
+                      Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: _uploadingAvatar
+                            ? const Padding(
+                                padding: EdgeInsets.all(6),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Icon(
+                                Icons.edit_rounded,
+                                size: 14,
+                                color: Colors.white,
+                              ),
                       ),
-                    ),
-                    Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      child: const Icon(
-                        Icons.edit_rounded,
-                        size: 14,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: AppSizes.md),
@@ -94,6 +243,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
               ),
               const SizedBox(height: AppSizes.xl),
+
+              // ── Edit Profil ─────────────────────────────────────────
               Text(
                 'Informasi Profil',
                 style: TextStyle(
@@ -106,27 +257,44 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               AppCard(
                 child: Column(
                   children: [
-                    _InfoRow(
-                      label: 'NAMA LENGKAP',
-                      value: user?.fullName ?? '-',
+                    LabeledField(
+                      label: 'Nama Lengkap',
+                      child: AppTextField(
+                        controller: _nameCtrl,
+                        hint: 'Nama lengkap',
+                      ),
                     ),
-                    const Divider(height: AppSizes.lg),
-                    _InfoRow(label: 'EMAIL', value: user?.email ?? '-'),
-                    const Divider(height: AppSizes.lg),
-                    _InfoRow(
-                      label: 'NOMOR TELEPON',
-                      value: user?.phone ?? '-',
+                    const SizedBox(height: AppSizes.md),
+                    LabeledField(
+                      label: 'Email',
+                      child: AppTextField(
+                        controller: _emailCtrl,
+                        hint: 'email@contoh.com',
+                        keyboardType: TextInputType.emailAddress,
+                      ),
                     ),
-                    const Divider(height: AppSizes.lg),
-                    const _InfoRow(
-                      label: 'LOKASI',
-                      value: 'Jakarta, Indonesia',
-                      prefixIcon: Icons.location_on_outlined,
+                    const SizedBox(height: AppSizes.md),
+                    LabeledField(
+                      label: 'Nomor Telepon',
+                      child: AppTextField(
+                        controller: _phoneCtrl,
+                        hint: '08xxxxxxxxxx',
+                        keyboardType: TextInputType.phone,
+                      ),
+                    ),
+                    const SizedBox(height: AppSizes.lg),
+                    PrimaryButton(
+                      label: 'Simpan Profil',
+                      icon: Icons.save_outlined,
+                      loading: _savingProfile,
+                      onPressed: _savingProfile ? null : _saveProfile,
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: AppSizes.xl),
+
+              // ── Ubah Kata Sandi ─────────────────────────────────────
               Text(
                 'Keamanan',
                 style: TextStyle(
@@ -149,17 +317,19 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     ),
                     const SizedBox(height: AppSizes.sm),
                     TextField(
-                      obscureText: _obscure,
+                      controller: _currentPwCtrl,
+                      obscureText: _obscureCurrent,
                       decoration: InputDecoration(
                         hintText: '••••••••',
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscure
+                            _obscureCurrent
                                 ? Icons.visibility_off_outlined
                                 : Icons.visibility_outlined,
                             color: AppColors.textT(context),
                           ),
-                          onPressed: () => setState(() => _obscure = !_obscure),
+                          onPressed: () => setState(
+                              () => _obscureCurrent = !_obscureCurrent),
                         ),
                       ),
                     ),
@@ -173,29 +343,33 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     ),
                     const SizedBox(height: AppSizes.sm),
                     TextField(
-                      obscureText: true,
+                      controller: _newPwCtrl,
+                      obscureText: _obscureNew,
                       decoration: InputDecoration(
-                        hintText: 'Masukkan kata sandi baru',
-                        suffixIcon: Icon(
-                          Icons.lock_outline_rounded,
-                          color: AppColors.textT(context),
+                        hintText: 'Minimal 8 karakter',
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureNew
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: AppColors.textT(context),
+                          ),
+                          onPressed: () =>
+                              setState(() => _obscureNew = !_obscureNew),
                         ),
                       ),
+                    ),
+                    const SizedBox(height: AppSizes.lg),
+                    PrimaryButton(
+                      label: 'Ubah Kata Sandi',
+                      icon: Icons.lock_outline_rounded,
+                      loading: _savingPassword,
+                      onPressed: _savingPassword ? null : _changePassword,
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: AppSizes.xl),
-              PrimaryButton(
-                label: 'Simpan Perubahan',
-                icon: Icons.save_outlined,
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Perubahan tersimpan')),
-                  );
-                },
-              ),
-              const SizedBox(height: AppSizes.md),
               SecondaryButton(
                 label: 'Keluar Akun',
                 icon: Icons.logout_rounded,
@@ -211,54 +385,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData? prefixIcon;
-
-  const _InfoRow({
-    required this.label,
-    required this.value,
-    this.prefixIcon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            color: AppColors.textT(context),
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.5,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Row(
-          children: [
-            if (prefixIcon != null) ...[
-              Icon(prefixIcon, size: 16, color: AppColors.primary),
-              const SizedBox(width: 4),
-            ],
-            Expanded(
-              child: Text(
-                value,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textP(context),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

@@ -378,15 +378,15 @@ class _OverviewView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Platform Growth',
-                  style: _sectionTitleStyle,
+                  style: _sectionTitleStyle(context),
                 ),
                 const SizedBox(height: 2),
-                const Text(
+                Text(
                   'Activity across all segments',
                   style: TextStyle(
-                    color: AppColors.textSecondary,
+                    color: AppColors.textS(context),
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -454,9 +454,9 @@ class _OverviewView extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: Text('Recent Platform Logs',
-                          style: _sectionTitleStyle),
+                          style: _sectionTitleStyle(context)),
                     ),
                     TextButton(
                       onPressed: onOpenUsers,
@@ -519,7 +519,7 @@ class _MetricValue extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            color: AppColors.textSecondary,
+            color: AppColors.textS(context),
             fontSize: narrow ? 11 : 13,
             fontWeight: FontWeight.w700,
           ),
@@ -549,12 +549,12 @@ class _ActivityTrendCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Activity Trend', style: _sectionTitleStyle),
+          Text('Activity Trend', style: _sectionTitleStyle(context)),
           const SizedBox(height: 2),
-          const Text(
+          Text(
             'Request & transaksi 7 hari terakhir',
             style: TextStyle(
-              color: AppColors.textSecondary,
+              color: AppColors.textS(context),
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
@@ -601,8 +601,8 @@ class _ActivityTrendCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: AppSizes.sm),
                           child: Text(
                             labels[index],
-                            style: const TextStyle(
-                              color: AppColors.textTertiary,
+                            style: TextStyle(
+                              color: AppColors.textT(context),
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
                             ),
@@ -640,10 +640,10 @@ class _ActivityTrendCard extends StatelessWidget {
           ),
           if (!hasData) ...[
             const SizedBox(height: AppSizes.sm),
-            const Text(
+            Text(
               'Belum ada aktivitas minggu ini',
               style: TextStyle(
-                color: AppColors.textSecondary,
+                color: AppColors.textS(context),
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
@@ -713,14 +713,14 @@ class _RequestMixChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Segment Mix', style: _sectionTitleStyle),
+          Text('Segment Mix', style: _sectionTitleStyle(context)),
           const SizedBox(height: 2),
           Text(
             total == 0
                 ? 'Belum ada aktivitas segmen'
                 : '$total aktivitas tercatat',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              color: AppColors.textS(context),
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
@@ -785,12 +785,12 @@ class _StatusBreakdown extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Status Breakdown', style: _sectionTitleStyle),
+          Text('Status Breakdown', style: _sectionTitleStyle(context)),
           const SizedBox(height: 2),
           Text(
             total == 0 ? 'Belum ada status request' : '$total item dipantau',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              color: AppColors.textS(context),
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
@@ -830,12 +830,12 @@ class _MarketplaceSnapshotCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Marketplace Snapshot', style: _sectionTitleStyle),
+          Text('Marketplace Snapshot', style: _sectionTitleStyle(context)),
           const SizedBox(height: 2),
-          const Text(
+          Text(
             'Stok & nilai katalog produk',
             style: TextStyle(
-              color: AppColors.textSecondary,
+              color: AppColors.textS(context),
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
@@ -923,8 +923,8 @@ class _CompactAnalyticTile extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
+                  style: TextStyle(
+                    color: AppColors.textS(context),
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                   ),
@@ -962,8 +962,8 @@ class _ProgressRow extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
+                style: TextStyle(
+                  color: AppColors.textP(context),
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
                 ),
@@ -1016,8 +1016,8 @@ class _LegendDot extends StatelessWidget {
         const SizedBox(width: AppSizes.xs),
         Text(
           label,
-          style: const TextStyle(
-            color: AppColors.textSecondary,
+          style: TextStyle(
+            color: AppColors.textS(context),
             fontSize: 11,
             fontWeight: FontWeight.w700,
           ),
@@ -1066,8 +1066,8 @@ class _PlatformLogTile extends StatelessWidget {
               children: [
                 Text(
                   '${request.type} - ${request.categoryName}',
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: AppColors.textP(context),
                     fontWeight: FontWeight.w800,
                     fontSize: 14,
                   ),
@@ -1075,8 +1075,8 @@ class _PlatformLogTile extends StatelessWidget {
                 const SizedBox(height: 5),
                 Text(
                   request.userName,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
+                  style: TextStyle(
+                    color: AppColors.textS(context),
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -1178,8 +1178,8 @@ class _UserTile extends StatelessWidget {
                   user.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: AppColors.textP(context),
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                   ),
@@ -1189,8 +1189,8 @@ class _UserTile extends StatelessWidget {
                   user.email,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: AppColors.textP(context),
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
@@ -1348,16 +1348,16 @@ class _WasteGroupTile extends StatelessWidget {
                           group.userName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
+                          style: TextStyle(
+                            color: AppColors.textP(context),
                             fontSize: 17,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
                         Text(
                           '${group.requests.length} Data',
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
+                          style: TextStyle(
+                            color: AppColors.textS(context),
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
@@ -1370,7 +1370,7 @@ class _WasteGroupTile extends StatelessWidget {
                         ? Icons.keyboard_arrow_up_rounded
                         : Icons.keyboard_arrow_down_rounded,
                     color:
-                        expanded ? AppColors.primary : AppColors.textTertiary,
+                        expanded ? AppColors.primary : AppColors.textT(context),
                   ),
                 ],
               ),
@@ -1435,8 +1435,8 @@ class _WasteRequestCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   requestCode(request),
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
+                  style: TextStyle(
+                    color: AppColors.textS(context),
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                   ),
@@ -1455,8 +1455,8 @@ class _WasteRequestCard extends StatelessWidget {
               _CategoryChip(label: request.categoryName),
               Text(
                 '${_compactDouble(request.weightKg)} kg',
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
+                style: TextStyle(
+                  color: AppColors.textS(context),
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
                 ),
@@ -1467,8 +1467,8 @@ class _WasteRequestCard extends StatelessWidget {
           if (actions.isEmpty)
             Text(
               request.notes.trim().isEmpty ? 'Tidak ada aksi' : request.notes,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
+              style: TextStyle(
+                color: AppColors.textS(context),
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
@@ -1781,7 +1781,7 @@ class _MarketplaceProductTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: AppColors.textPrimary,
+                    color: AppColors.textP(context),
                     fontSize: narrow ? 15 : 17,
                     fontWeight: FontWeight.w800,
                   ),
@@ -1793,7 +1793,7 @@ class _MarketplaceProductTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: AppColors.textSecondary,
+                    color: AppColors.textS(context),
                     fontSize: narrow ? 12 : 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -1837,7 +1837,7 @@ class _MarketplaceProductTile extends StatelessWidget {
             IconButton(
               onPressed: onEdit,
               icon: const Icon(Icons.edit_rounded),
-              color: AppColors.textPrimary,
+              color: AppColors.textP(context),
               tooltip: 'Edit produk',
             ),
             IconButton(
@@ -1949,10 +1949,10 @@ class _MarketplaceProductFormState extends State<_MarketplaceProductForm> {
           children: [
             Text(
               widget.existing == null ? 'Tambah Produk' : 'Ubah Produk',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color: AppColors.textP(context),
               ),
             ),
             const SizedBox(height: AppSizes.lg),
@@ -2175,16 +2175,16 @@ class _TransactionGroupTile extends StatelessWidget {
                           group.userName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
+                          style: TextStyle(
+                            color: AppColors.textP(context),
                             fontSize: 17,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
                         Text(
                           '${group.transactions.length} Data',
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
+                          style: TextStyle(
+                            color: AppColors.textS(context),
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
@@ -2197,7 +2197,7 @@ class _TransactionGroupTile extends StatelessWidget {
                         ? Icons.keyboard_arrow_up_rounded
                         : Icons.keyboard_arrow_down_rounded,
                     color:
-                        expanded ? AppColors.primary : AppColors.textTertiary,
+                        expanded ? AppColors.primary : AppColors.textT(context),
                   ),
                 ],
               ),
@@ -2284,8 +2284,8 @@ class _TransactionCardState extends State<_TransactionCard> {
               Expanded(
                 child: Text(
                   transactionCode(tx.id),
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
+                  style: TextStyle(
+                    color: AppColors.textS(context),
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                   ),
@@ -2299,8 +2299,8 @@ class _TransactionCardState extends State<_TransactionCard> {
           if (tx.description.trim().isNotEmpty)
             Text(
               tx.description,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
+              style: TextStyle(
+                color: AppColors.textS(context),
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
@@ -2391,7 +2391,7 @@ class _PageHeading extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              color: AppColors.textPrimary,
+              color: AppColors.textP(context),
               fontSize: narrow ? 18 : 22,
               fontWeight: FontWeight.w800,
             ),
@@ -2400,7 +2400,7 @@ class _PageHeading extends StatelessWidget {
           Text(
             subtitle,
             style: TextStyle(
-              color: AppColors.textSecondary,
+              color: AppColors.textS(context),
               fontSize: narrow ? 13 : 15,
               height: 1.4,
               fontWeight: FontWeight.w500,
@@ -2615,8 +2615,8 @@ class _EmptyLine extends StatelessWidget {
     return Text(
       message,
       textAlign: TextAlign.center,
-      style: const TextStyle(
-        color: AppColors.textSecondary,
+      style: TextStyle(
+        color: AppColors.textS(context),
         fontWeight: FontWeight.w600,
       ),
     );
@@ -2649,7 +2649,7 @@ class _ErrorState extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.textSecondary),
+              style: TextStyle(color: AppColors.textS(context)),
             ),
             const SizedBox(height: AppSizes.lg),
             ElevatedButton(
@@ -2663,24 +2663,12 @@ class _ErrorState extends StatelessWidget {
   }
 }
 
-const _titleStyle = TextStyle(
-  color: AppColors.textPrimary,
-  fontSize: 22,
-  fontWeight: FontWeight.w800,
-);
-
-const _sectionTitleStyle = TextStyle(
-  color: AppColors.textPrimary,
-  fontSize: 16,
-  fontWeight: FontWeight.w800,
-);
-
-const _subtitleStyle = TextStyle(
-  color: AppColors.textSecondary,
-  fontSize: 15,
-  height: 1.45,
-  fontWeight: FontWeight.w500,
-);
+// Theme-aware section title so it stays readable in dark mode.
+TextStyle _sectionTitleStyle(BuildContext context) => TextStyle(
+      color: AppColors.textP(context),
+      fontSize: 16,
+      fontWeight: FontWeight.w800,
+    );
 
 (Color, Color) _statusPalette(String status) {
   switch (status) {
